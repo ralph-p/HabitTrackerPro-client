@@ -1,31 +1,34 @@
 import React, { useState } from 'react'
-import Account from './Account'
-import { useSession } from '@supabase/auth-helpers-react'
 import { useResolution } from '../hooks/useResolution.hooks'
+import { Box, Button, Input, InputGroup, InputRightElement, VStack } from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
+import { ResolutionList } from './ResolutionList'
 type Props = {}
 
 const Main = (props: Props) => {
-  const session = useSession()
-  const [showAccount, setShowAccount] = useState<boolean>(false)
+  const [newRes, setNewRes] = useState<string>('')
   const { resolutionList, addResolution, getResolutionNotes, addResolutionNote } = useResolution()
-
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setNewRes(event.target.value)
+  const submitNewResolution = () => {
+    addResolution(newRes)
+    setNewRes('')
+  }
   return (
-    <>
-      Main Page
-      <button
-        className="button primary block"
-        onClick={() => setShowAccount(!showAccount)}
-      >
-        {showAccount ? 'Hide Account' : 'Account info'}
-      </button>
-      <button
-        className="button primary block"
-        onClick={() => addResolution("Read More")}
-      >
-        Add Resolution
-      </button>
-      {showAccount && <Account session={session} />}
-      {resolutionList && (
+    <VStack paddingTop={4}>
+      <InputGroup size='sm' width="xs" >
+        <Input
+          pr='4.5rem'
+          type="text"
+          placeholder='New Resolution'
+          value={newRes}
+          onChange={handleChange}
+        />
+        <InputRightElement width='4.5rem'>
+          <AddIcon boxSize={4} onClick={submitNewResolution} cursor="pointer" />
+        </InputRightElement>
+      </InputGroup>
+      <ResolutionList resolutionList={resolutionList} />
+      {/* {resolutionList && (
         resolutionList.map((r) => (
           <div onClick={() => getResolutionNotes(r.id)}>
             {r.name}
@@ -37,8 +40,8 @@ const Main = (props: Props) => {
             </button>
           </div>
         ))
-      )}
-    </>
+      )} */}
+    </VStack >
   )
 }
 
