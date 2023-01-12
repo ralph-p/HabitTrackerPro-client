@@ -8,6 +8,8 @@ const Home = () => {
 
   return (
     <div className="container" style={{ padding: '50px 0 100px 0' }}>
+      <h1>Resolution tracker</h1>
+      <h3>A simple web app to help you keep track of your various resolutions</h3>
       {!session ? (
         <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
       ) : (
