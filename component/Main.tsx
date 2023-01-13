@@ -7,7 +7,12 @@ type Props = {}
 
 const Main = (props: Props) => {
   const [newRes, setNewRes] = useState<string>('')
-  const { resolutionList, addResolution, getResolutionNotes, addResolutionNote } = useResolution()
+  const {
+    resolutionList,
+    addResolution,
+    getResolutionNotes,
+    addResolutionNote
+  } = useResolution()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setNewRes(event.target.value)
   const submitNewResolution = () => {
     addResolution(newRes)
@@ -27,7 +32,7 @@ const Main = (props: Props) => {
           <AddIcon boxSize={4} onClick={submitNewResolution} cursor="pointer" />
         </InputRightElement>
       </InputGroup>
-      <ResolutionList resolutionList={resolutionList} />
+      <ResolutionList resolutionList={resolutionList} addResolutionNote={addResolutionNote} />
       {/* {resolutionList && (
         resolutionList.map((r) => (
           <div onClick={() => getResolutionNotes(r.id)}>
