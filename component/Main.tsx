@@ -10,7 +10,6 @@ const Main = (props: Props) => {
   const {
     resolutionList,
     addResolution,
-    getResolutionNotes,
     addResolutionNote
   } = useResolution()
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => setNewRes(event.target.value)

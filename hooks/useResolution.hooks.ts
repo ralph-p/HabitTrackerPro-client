@@ -1,11 +1,12 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import moment from 'moment';
 import { useEffect, useState } from 'react'
 export type Resolution = {
   id: string;
   name: string;
   active: boolean;
   inserted_at: string;
-  lastUpdated?: string;
+  lastUpdated: number;
   notes?: ResolutionNote[];
 }
 export type ResolutionNote = {
@@ -37,35 +38,23 @@ export const useResolution = () => {
       if (data) {
         let newResolutionList: Resolution[] = []
         data.map((resolution) => {
-          const resNotes: ResolutionNote[] | [] = resolution.task_note?.map((n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at }))
+          const resNotes: ResolutionNote[] | [] = resolution.task_note?.map(
+            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+          ).sort((a, b) => moment(a.inserted_at).second() - moment(b.inserted_at).second())
+          const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
+          const duration = moment().diff(moment(updatedString), 'minutes')
+
           const newRes: Resolution = {
             id: resolution.id,
             name: resolution.name,
             active: resolution.active,
             inserted_at: resolution.inserted_at,
             notes: resNotes,
-            // notes: resolution.task_note?.map((n) => { note: n.note })
+            lastUpdated: duration,
           }
-          // getResolutionNotes(resolution.id).then((notes) => {
-          //   let newResolutionNotes: ResolutionNote[] = []
-          //   console.log(notes);
-
-          //   notes?.map((note) => {
-          //     const newNote: ResolutionNote = {
-          //       id: note.id,
-          //       note: note.note,
-          //       inserted_at: note.inserted_at,
-          //     }
-          //     newResolutionNotes.push(newNote)
-
-          //   })
-          //   newRes.notes = newResolutionNotes;
-          // })
           newResolutionList.push(newRes)
         })
-        // console.log(data);
-
-        setResList([...newResolutionList]);
+        setResList([...newResolutionList.sort((a, b) => a.lastUpdated - b.lastUpdated)]);
 
       }
     } catch (error) {
@@ -75,24 +64,6 @@ export const useResolution = () => {
     }
   }
 
-  const getResolutionNotes = async (taskId: string) => {
-    try {
-      let { data, error, status } = await supabase
-        .from('task_note')
-        .select(`id, note, inserted_at, updated_at`)
-        .eq('user_id', user?.id)
-        .eq('task_id', taskId)
-      if (error && status !== 406) {
-        throw error
-      }
-      if (data) {
-        return data;
-
-      }
-    } catch (error) {
-      alert('Error fetching data')
-    }
-  }
   const addResolution = async (name: string) => {
     if (name) {
       try {
@@ -123,5 +94,5 @@ export const useResolution = () => {
       alert('Enter a name')
     }
   }
-  return { resolutionList: resList, addResolution, getResolutionNotes, addResolutionNote }
+  return { resolutionList: resList, addResolution, addResolutionNote }
 }
