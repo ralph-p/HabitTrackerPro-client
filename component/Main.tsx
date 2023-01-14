@@ -18,7 +18,7 @@ const Main = (props: Props) => {
     setNewRes('')
   }
   return (
-    <VStack paddingTop={4} overflow='scroll'>
+    <VStack paddingTop={4}>
       <InputGroup size='sm' width="xs" >
         <Input
           pr='4.5rem'

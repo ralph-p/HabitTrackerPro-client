@@ -11,7 +11,7 @@ const Home = () => {
   const [showAccount, setShowAccount] = useState<boolean>(false)
 
   return (
-    <Flex height="100vh" alignItems="start" justifyContent="center" background="blackAlpha.900">
+    <Flex height="fit-content" alignItems="start" justifyContent="center" background="blackAlpha.900">
       <Flex direction="column" padding="10">
         <VStack spacing={2}>
           <HStack>

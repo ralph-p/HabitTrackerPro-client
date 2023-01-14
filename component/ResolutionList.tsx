@@ -13,6 +13,7 @@ export const ResolutionList = ({ resolutionList, addResolutionNote }: Props) => 
       spacing={4}
       width="100%"
       paddingTop="4"
+      overflow='scroll'
     >
       {
         resolutionList.map((resolution) => {

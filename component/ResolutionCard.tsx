@@ -40,7 +40,7 @@ const ResolutionCard = ({ resolution, addNote }: Props) => {
           <Input
             pr='4.5rem'
             type="text"
-            placeholder='New Resolution'
+            placeholder={`${resolution.name} note`}
             value={note}
             onChange={handleChange}
           />
