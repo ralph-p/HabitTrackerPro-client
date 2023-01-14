@@ -15,11 +15,11 @@ const Home = () => {
       <Flex direction="column" padding="10">
         <VStack spacing={2}>
           <HStack>
-            <Heading as='h1' size="xl">Resolution tracker</Heading>
+            <Heading as='h1' size="xl">GST list</Heading>
             {session && <Account session={session} />}
           </HStack>
           <Box width="70%">
-            <Heading as='h3' size='sm'>A simple web app to help you keep track of your various resolutions</Heading>
+            <Heading as='h3' size='sm'>A simple web app to help you get shit done.</Heading>
           </Box>
         </VStack>
         {!session ? (

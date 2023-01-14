@@ -5,6 +5,7 @@ export type Resolution = {
   name: string;
   active: boolean;
   inserted_at: string;
+  lastUpdated?: string;
   notes?: ResolutionNote[];
 }
 export type ResolutionNote = {
@@ -28,7 +29,7 @@ export const useResolution = () => {
     try {
       let { data, error, status } = await supabase
         .from('task')
-        .select(`id, name, active, inserted_at, name, updated_at`)
+        .select(`id, name, active, inserted_at, name, updated_at, task_note(id, note, inserted_at)`)
         .eq('user_id', user?.id)
       if (error && status !== 406) {
         throw error
@@ -36,32 +37,40 @@ export const useResolution = () => {
       if (data) {
         let newResolutionList: Resolution[] = []
         data.map((resolution) => {
+          const resNotes: ResolutionNote[] | [] = resolution.task_note?.map((n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at }))
           const newRes: Resolution = {
             id: resolution.id,
             name: resolution.name,
             active: resolution.active,
-            inserted_at: resolution.inserted_at
+            inserted_at: resolution.inserted_at,
+            notes: resNotes,
+            // notes: resolution.task_note?.map((n) => { note: n.note })
           }
-          getResolutionNotes(resolution.id).then((notes) => {
-            let newResolutionNotes: ResolutionNote[] = []
-            notes?.map((note) => {
-              const newNote: ResolutionNote = {
-                id: note.id,
-                note: note.note,
-                inserted_at: note.inserted_at,
-              }
-              newResolutionNotes.push(newNote)
-              console.log(newNote);
+          // getResolutionNotes(resolution.id).then((notes) => {
+          //   let newResolutionNotes: ResolutionNote[] = []
+          //   console.log(notes);
 
-            })
-            newRes.notes = newResolutionNotes;
+          //   notes?.map((note) => {
+          //     const newNote: ResolutionNote = {
+          //       id: note.id,
+          //       note: note.note,
+          //       inserted_at: note.inserted_at,
+          //     }
+          //     newResolutionNotes.push(newNote)
 
-          })
+          //   })
+          //   newRes.notes = newResolutionNotes;
+          // })
           newResolutionList.push(newRes)
         })
+        // console.log(data);
+
         setResList([...newResolutionList]);
+
       }
     } catch (error) {
+      console.log(error);
+
       alert('Error loading activity data!')
     }
   }

@@ -1,5 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Card, CardBody, CardHeader, Heading, Input, InputGroup, InputRightElement, VStack, Text, Box } from '@chakra-ui/react'
+import { Card, CardBody, CardHeader, Heading, Input, InputGroup, InputRightElement, VStack, Text, Box, HStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Resolution } from '../hooks/useResolution.hooks';
 
@@ -15,13 +15,16 @@ const ResolutionCard = ({ resolution, addNote }: Props) => {
     addNote(resolution.id, note)
     setNote('')
   }
-  console.log(resolution.notes);
 
   return (
     <Card key={`${resolution.name}-`} backgroundColor="gray.200" width="100%">
-
       <CardHeader>
-        <Heading size="md" color="blackAlpha.900">{resolution.name}</Heading>
+        <>
+          <Heading size="md" color="blackAlpha.900">
+            {resolution.name}
+          </Heading>
+          {resolution.notes?.length ? resolution.notes[0].inserted_at : resolution.inserted_at}
+        </>
       </CardHeader>
       <CardBody>
         <InputGroup size='sm' width="xs" >

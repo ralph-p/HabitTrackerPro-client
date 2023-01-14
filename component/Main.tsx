@@ -19,7 +19,7 @@ const Main = (props: Props) => {
     setNewRes('')
   }
   return (
-    <VStack paddingTop={4}>
+    <VStack paddingTop={4} overflow='scroll'>
       <InputGroup size='sm' width="xs" >
         <Input
           pr='4.5rem'
@@ -33,19 +33,6 @@ const Main = (props: Props) => {
         </InputRightElement>
       </InputGroup>
       <ResolutionList resolutionList={resolutionList} addResolutionNote={addResolutionNote} />
-      {/* {resolutionList && (
-        resolutionList.map((r) => (
-          <div onClick={() => getResolutionNotes(r.id)}>
-            {r.name}
-            <button
-              className="button primary block"
-              onClick={() => addResolutionNote(r.id, "Read Today")}
-            >
-              Add Note
-            </button>
-          </div>
-        ))
-      )} */}
     </VStack >
   )
 }
