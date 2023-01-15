@@ -6,9 +6,10 @@ type Props = {
   callBack: (input: string) => void;
   placeholder?: string;
   characterLimit?: number;
+  fontColor?: string;
 }
 const CHARACTER_LIMIT = 30;
-export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIMIT }: Props) => {
+export const AddInput = ({ callBack, placeholder, fontColor, characterLimit = CHARACTER_LIMIT }: Props) => {
   const [inputValue, setInputValue] = useState<string>('')
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event?.target?.value
@@ -26,7 +27,7 @@ export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIM
         placeholder={placeholder}
         value={inputValue}
         onChange={handleChange}
-        color="blackAlpha.800"
+        color={fontColor || 'blackAlpha.900'}
       />
       <InputRightElement width='4.5rem'>
         <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color="blackAlpha.600" />

@@ -27,7 +27,7 @@ export const TaskCard = ({ task, addNote }: Props) => {
           <Heading size="md" color="blackAlpha.900">
             {task.name}
           </Heading>
-          {lastUpdated()}
+          <Text color="gray.600">{lastUpdated()}</Text>
         </>
       </CardHeader>
       <CardBody>
