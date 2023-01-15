@@ -30,7 +30,7 @@ export const AddInput = ({ callBack, placeholder, fontColor, characterLimit = CH
         color={fontColor || 'blackAlpha.900'}
       />
       <InputRightElement width='4.5rem'>
-        <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color="blackAlpha.600" />
+        <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color={'teal'} />
       </InputRightElement>
     </InputGroup>)
 }

@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Heading, VStack, Text, Box, HStack } from '@chakra-ui/react'
+import { Card, CardBody, CardHeader, Heading, VStack, Text, Box, HStack, Switch } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Task, TaskNote } from '../hooks/useTask.hooks';
 import moment from "moment"
@@ -22,15 +22,16 @@ export const TaskCard = ({ task, addNote }: Props) => {
   }
   return (
     <Card key={`${task.name}-`} backgroundColor="gray.200" width="100%">
-      <CardHeader>
-        <>
+      <CardHeader paddingBottom={'1'}>
+        <HStack justifyContent={'space-between'}>
           <Heading size="md" color="blackAlpha.900">
             {task.name}
           </Heading>
-          <Text color="gray.600">{lastUpdated()}</Text>
-        </>
+          <Text color="grey">Active: <Switch colorScheme={'teal'} isChecked={task.active} isDisabled /></Text>
+        </HStack>
       </CardHeader>
       <CardBody>
+        <Text color="gray.600">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
         <VStack>
           {

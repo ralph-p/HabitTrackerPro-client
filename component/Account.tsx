@@ -35,11 +35,13 @@ export default function Account({ session }: { session: Session | null }) {
                 placeholder='Username'
                 size='sm'
                 variant='outline'
+                isDisabled
               />
               <Input
                 placeholder='Website'
                 size='sm'
                 variant='outline'
+                isDisabled
               />
               <Button onClick={() => supabase.auth.signOut()}>Sign Out</Button>
             </Stack>

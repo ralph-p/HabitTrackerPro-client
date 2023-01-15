@@ -21,7 +21,7 @@ const Main = (props: Props) => {
     <VStack paddingTop={4}>
       <HStack>
         <AddInput callBack={submitNewTask} placeholder="Add Task" fontColor='white' />
-        <Button onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
+        <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
       {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} /> : <Skeleton height='100vh' />}
     </VStack >
