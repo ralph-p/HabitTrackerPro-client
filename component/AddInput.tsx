@@ -29,14 +29,7 @@ export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIM
         color="blackAlpha.800"
       />
       <InputRightElement width='4.5rem'>
-        <IconButton
-          aria-label="add-button"
-          icon={<AddIcon />}
-          onClick={addButtonOnClick}
-          size="sm"
-          variant={'unstyled'}
-        />
-        {/* <AddIcon boxSize={4}  cursor="pointer" color="blackAlpha.600" /> */}
+        <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color="blackAlpha.600" />
       </InputRightElement>
     </InputGroup>)
 }

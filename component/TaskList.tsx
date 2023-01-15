@@ -1,11 +1,11 @@
 import { StackDivider, VStack, } from '@chakra-ui/react'
 import React from 'react'
-import { Task } from '../hooks/useResolution.hooks'
+import { Task } from '../hooks/useTask.hooks'
 import { TaskCard } from './TaskCard'
 
-type Props = { taskList: Task[], addResolutionNote: (taskId: string, note: string) => Promise<void> }
+type Props = { taskList: Task[], addTaskNote: (taskId: string, note: string) => Promise<void> }
 
-export const TaskList = ({ taskList, addResolutionNote }: Props) => {
+export const TaskList = ({ taskList, addTaskNote }: Props) => {
   return (
     <VStack
       align='stretch'
@@ -17,7 +17,7 @@ export const TaskList = ({ taskList, addResolutionNote }: Props) => {
     >
       {
         taskList.map((task) => {
-          return (<TaskCard key={task.id} task={task} addNote={addResolutionNote} />)
+          return (<TaskCard key={task.id} task={task} addNote={addTaskNote} />)
         })
       }
     </VStack>

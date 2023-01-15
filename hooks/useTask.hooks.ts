@@ -1,6 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
+import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst } from '../utils/task.utils';
 export type Task = {
   id: string;
   name: string;
@@ -14,19 +15,22 @@ export type TaskNote = {
   note: string;
   inserted_at: string;
 }
-export const useResolution = () => {
+export const useTask = () => {
   const supabase = useSupabaseClient()
   const user = useUser()
-  const [resList, setResList] = useState<Task[] | []>([])
-
+  const [taskList, setTaskList] = useState<Task[] | []>([])
+  const [sortNewestFirst, setSortNewestFirst] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   useEffect(() => {
     if (user) {
-      getResolutionList()
+      getTaskList()
     }
-  }, [user])
+  }, [user, sortNewestFirst])
+  const updateSort = () => setSortNewestFirst(!sortNewestFirst)
 
-  const getResolutionList = async () => {
+  const getTaskList = async () => {
     try {
+      setLoading(true)
       let { data, error, status } = await supabase
         .from('task')
         .select(`id, name, active, inserted_at, name, updated_at, task_note(id, note, inserted_at)`)
@@ -37,9 +41,11 @@ export const useResolution = () => {
       if (data) {
         let newResolutionList: Task[] = []
         data.map((resolution) => {
-          const resNotes: TaskNote[] | [] = resolution.task_note?.map(
+          // map over the task note array and build an array of task notes, then sort by latest completed item
+          let resNotes: TaskNote[] | [] = resolution.task_note?.map(
             (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
-          ).sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
+          )
+          resNotes = sortTaskNotesNewFirst(resNotes)
           const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
           const duration = moment().diff(moment(updatedString), 'minutes')
 
@@ -53,23 +59,26 @@ export const useResolution = () => {
           }
           newResolutionList.push(newRes)
         })
-        setResList([...newResolutionList.sort((a, b) => a.lastUpdated - b.lastUpdated)]);
-
+        if (sortNewestFirst) {
+          newResolutionList = sortTaskNewFirst(newResolutionList)
+        } else {
+          newResolutionList = sortTaskOldFirst(newResolutionList)
+        }
+        setTaskList([...newResolutionList]);
       }
     } catch (error) {
-      console.log(error);
-
       alert('Error loading activity data!')
     }
+    setLoading(false)
   }
 
-  const addResolution = async (name: string) => {
+  const addTask = async (name: string) => {
     if (name) {
       try {
         const { error } = await supabase
           .from('task')
           .upsert({ name, active: true, user_id: user?.id })
-        getResolutionList()
+        getTaskList()
       } catch (error) {
         alert('Error creating data!')
         console.log(error);
@@ -78,20 +87,22 @@ export const useResolution = () => {
       alert('Gotta enter a name to create a task!')
     }
   }
-  const addResolutionNote = async (taskId: string, note: string) => {
-    if (taskId) {
+  const addTaskNote = async (taskId: string, note: string) => {
+    if (taskId && note) {
       try {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: user?.id })
-        getResolutionList()
+        console.log(data);
+
+        getTaskList()
       } catch (error) {
         alert('Error creating data!')
         console.log(error);
       }
     } else {
-      alert('Enter a name')
+      alert('Enter a task note')
     }
   }
-  return { taskList: resList, addResolution, addResolutionNote }
+  return { taskList, addTask, addTaskNote, updateSort, newestFist: sortNewestFirst, loading }
 }

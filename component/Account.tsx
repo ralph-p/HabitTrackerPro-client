@@ -33,6 +33,7 @@ export default function Account({ session }: { session: Session | null }) {
         <ModalContent backgroundColor="blackAlpha.900">
           <ModalHeader>Account Details</ModalHeader>
           <ModalBody>
+            <Text size="md">Add something you want to do more of, and update it whenever you complete the task.</Text>
             <Stack spacing={3}>
               <Text mb='8px'>Email: {session.user.email}</Text>
               <Input

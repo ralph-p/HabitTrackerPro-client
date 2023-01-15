@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, Heading, VStack, Text, Box, HStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { Task, TaskNote } from '../hooks/useResolution.hooks';
+import { Task, TaskNote } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
 type Props = {
@@ -37,7 +37,7 @@ export const TaskCard = ({ task, addNote }: Props) => {
             task.notes?.map((note: TaskNote) => (
               <HStack key={note.id} width="100%" justifyContent="space-between">
                 <Text size="sm" color="blackAlpha.900">{note.note}</Text>
-                <Text size="sm" color="blackAlpha.500">{moment(note.inserted_at).format('d/MMM/yy')}</Text>
+                <Text size="sm" color="blackAlpha.500">{moment(note.inserted_at).format('DD/MMM/yy')}</Text>
               </HStack>
             ))
           }
