@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Task, TaskNote } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
+import { getCardTheme } from '../utils/task.utils';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
@@ -21,18 +22,19 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
     }
     return `Updated: ${duration.minutes()}m ago`
   }
+  const { cardColor, switchColor } = getCardTheme(task.lastUpdated)
   return (
-    <Card key={`${task.name}-`} backgroundColor="gray.200" width="100%">
+    <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">
       <CardHeader paddingBottom={'1'}>
         <HStack justifyContent={'space-between'}>
-          <Heading size="md" color="blackAlpha.900">
+          <Heading size="md" color="blackAlpha.800">
             {task.name}
           </Heading>
-          <Text color="grey">Active: <Switch colorScheme={'teal'} isChecked={task.active} onChange={() => updateTask(!task.active)} /></Text>
+          <Text color="blackAlpha.700">Active: <Switch colorScheme={switchColor} isChecked={task.active} onChange={() => updateTask(!task.active)} /></Text>
         </HStack>
       </CardHeader>
       <CardBody>
-        <Text color="gray.600">{lastUpdated()}</Text>
+        <Text color="gray.900">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
         <VStack>
           {
