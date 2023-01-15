@@ -1,19 +1,17 @@
 import { useUser, useSupabaseClient, Session } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
-import { Database } from '../utils/database.types'
-type Profiles = Database['public']['Tables']['profiles']['Row']
 type UserAccount = {
   email: string;
-  username: Profiles['username'];
-  website: Profiles['website'];
+  username: string;
+  website: string;
 }
 export const useProfile = ({ session }: { session: Session | null }) => {
-  const supabase = useSupabaseClient<Database>()
+  const supabase = useSupabaseClient()
   const user = useUser()
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState<Profiles['username']>(null)
-  const [website, setWebsite] = useState<Profiles['website']>(null)
-  const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
+  const [username, setUsername] = useState(null)
+  const [website, setWebsite] = useState(null)
+  const [avatar_url, setAvatarUrl] = useState(null)
   useEffect(() => {
     getProfile()
   }, [session])
@@ -50,9 +48,9 @@ export const useProfile = ({ session }: { session: Session | null }) => {
     website,
     avatar_url,
   }: {
-    username: Profiles['username']
-    website: Profiles['website']
-    avatar_url: Profiles['avatar_url']
+    username: string
+    website: string
+    avatar_url: string
   }) => {
     try {
       setLoading(true)
