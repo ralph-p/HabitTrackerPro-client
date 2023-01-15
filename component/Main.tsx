@@ -13,6 +13,7 @@ const Main = (props: Props) => {
     addTask,
     addTaskNote,
     updateSort,
+    setActive,
     newestFist,
     loading
   } = useTask()
@@ -23,7 +24,7 @@ const Main = (props: Props) => {
         <AddInput callBack={submitNewTask} placeholder="Add Task" fontColor='white' />
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
-      {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} /> : <Skeleton height='100vh' />}
+      {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} setActive={setActive} /> : <Skeleton height='100vh' />}
     </VStack >
   )
 }

@@ -83,7 +83,6 @@ export const useTask = () => {
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
-        console.log(error);
       }
     } else {
       alert('Gotta enter a name to create a task!')
@@ -92,19 +91,32 @@ export const useTask = () => {
   const addTaskNote = async (taskId: string, note: string) => {
     if (taskId && note) {
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: user?.id })
-        console.log(data);
 
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
-        console.log(error);
       }
     } else {
       alert('Enter a task note')
     }
   }
-  return { taskList, addTask, addTaskNote, updateSort, newestFist: sortNewestFirst, loading }
+  const setActive = async (id: string, active: boolean) => {
+    console.log(id);
+
+    try {
+      const { error } = await supabase
+        .from('task')
+        .update({ active })
+        .eq('user_id', user?.id)
+        .eq('id', id)
+      getTaskList()
+
+    } catch (error) {
+      alert('Error updating the active status!')
+    }
+  }
+  return { taskList, addTask, addTaskNote, updateSort, setActive, newestFist: sortNewestFirst, loading }
 }

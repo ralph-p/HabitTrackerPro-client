@@ -6,9 +6,10 @@ import { AddInput } from './AddInput';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
+  updateTask: (active: boolean) => void
 }
 
-export const TaskCard = ({ task, addNote }: Props) => {
+export const TaskCard = ({ task, addNote, updateTask }: Props) => {
   const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
     const duration = moment.duration(task.lastUpdated, 'minutes')
@@ -27,7 +28,7 @@ export const TaskCard = ({ task, addNote }: Props) => {
           <Heading size="md" color="blackAlpha.900">
             {task.name}
           </Heading>
-          <Text color="grey">Active: <Switch colorScheme={'teal'} isChecked={task.active} isDisabled /></Text>
+          <Text color="grey">Active: <Switch colorScheme={'teal'} isChecked={task.active} onChange={() => updateTask(!task.active)} /></Text>
         </HStack>
       </CardHeader>
       <CardBody>

@@ -3,9 +3,13 @@ import React from 'react'
 import { Task } from '../hooks/useTask.hooks'
 import { TaskCard } from './TaskCard'
 
-type Props = { taskList: Task[], addTaskNote: (taskId: string, note: string) => Promise<void> }
+type Props = {
+  taskList: Task[],
+  addTaskNote: (taskId: string, note: string) => Promise<void>
+  setActive: (id: string, active: boolean) => void;
+}
 
-export const TaskList = ({ taskList, addTaskNote }: Props) => {
+export const TaskList = ({ taskList, addTaskNote, setActive }: Props) => {
   return (
     <VStack
       align='stretch'
@@ -17,7 +21,8 @@ export const TaskList = ({ taskList, addTaskNote }: Props) => {
     >
       {
         taskList.map((task) => {
-          return (<TaskCard key={task.id} task={task} addNote={addTaskNote} />)
+          const updateTask = (active: boolean) => setActive(task.id, active)
+          return (<TaskCard key={task.id} task={task} addNote={addTaskNote} updateTask={updateTask} />)
         })
       }
     </VStack>
