@@ -41,23 +41,25 @@ export const useTask = () => {
       if (data) {
         let newResolutionList: Task[] = []
         data.map((resolution) => {
-          // map over the task note array and build an array of task notes, then sort by latest completed item
-          let resNotes: TaskNote[] | [] = resolution.task_note?.map(
-            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
-          )
-          resNotes = sortTaskNotesNewFirst(resNotes)
-          const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
-          const duration = moment().diff(moment(updatedString), 'minutes')
+          if (Array.isArray(resolution.task_note)) {
+            let resNotes: TaskNote[] | [] = resolution.task_note.map(
+              (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+            )
+            // map over the task note array and build an array of task notes, then sort by latest completed item
+            resNotes = sortTaskNotesNewFirst(resNotes)
+            const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
+            const duration = moment().diff(moment(updatedString), 'minutes')
 
-          const newRes: Task = {
-            id: resolution.id,
-            name: resolution.name,
-            active: resolution.active,
-            inserted_at: resolution.inserted_at,
-            notes: resNotes,
-            lastUpdated: duration,
+            const newRes: Task = {
+              id: resolution.id,
+              name: resolution.name,
+              active: resolution.active,
+              inserted_at: resolution.inserted_at,
+              notes: resNotes,
+              lastUpdated: duration,
+            }
+            newResolutionList.push(newRes)
           }
-          newResolutionList.push(newRes)
         })
         if (sortNewestFirst) {
           newResolutionList = sortTaskNewFirst(newResolutionList)

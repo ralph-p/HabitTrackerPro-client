@@ -3,6 +3,7 @@ import { useTask } from '../hooks/useTask.hooks'
 import { Button, VStack, Skeleton } from '@chakra-ui/react'
 import { TaskList } from './TaskList'
 import { AddInput } from './AddInput'
+import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
 
 type Props = {}
 
@@ -19,7 +20,7 @@ const Main = (props: Props) => {
   return (
     <VStack paddingTop={4}>
       <AddInput callBack={submitNewTask} placeholder="Add Task" />
-      <Button onClick={updateSort}>{newestFist ? 'Sort Oldest First' : 'Sort newest First'}</Button>
+      <Button onClick={updateSort}>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} /> : <Skeleton height='100vh' />}
     </VStack >
   )
