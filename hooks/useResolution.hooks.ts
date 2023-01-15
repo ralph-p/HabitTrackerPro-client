@@ -39,7 +39,7 @@ export const useResolution = () => {
         data.map((resolution) => {
           const resNotes: TaskNote[] | [] = resolution.task_note?.map(
             (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
-          ).sort((a, b) => moment(a.inserted_at).second() - moment(b.inserted_at).second())
+          ).sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
           const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
           const duration = moment().diff(moment(updatedString), 'minutes')
 

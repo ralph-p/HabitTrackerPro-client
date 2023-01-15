@@ -5,13 +5,14 @@ import React, { useState } from 'react'
 type Props = {
   callBack: (input: string) => void;
   placeholder?: string;
+  characterLimit?: number;
 }
-
-export const AddInput = ({ callBack, placeholder }: Props) => {
+const CHARACTER_LIMIT = 30;
+export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIMIT }: Props) => {
   const [inputValue, setInputValue] = useState<string>('')
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event?.target?.value
-    if (value.length <= 2) setInputValue(event.target.value)
+    if (value.length <= characterLimit) setInputValue(event.target.value)
   }
   const addButtonOnClick = () => {
     callBack(inputValue)
@@ -33,7 +34,7 @@ export const AddInput = ({ callBack, placeholder }: Props) => {
           icon={<AddIcon />}
           onClick={addButtonOnClick}
           size="sm"
-          variant={'link'}
+          variant={'unstyled'}
         />
         {/* <AddIcon boxSize={4}  cursor="pointer" color="blackAlpha.600" /> */}
       </InputRightElement>
