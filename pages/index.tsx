@@ -8,7 +8,6 @@ import Account from '../component/Account'
 const Home = () => {
   const session = useSession()
   const supabase = useSupabaseClient()
-  const [showAccount, setShowAccount] = useState<boolean>(false)
 
   return (
     <Flex height="fit-content" alignItems="start" justifyContent="center" background="blackAlpha.900">
