@@ -1,7 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject } from '../utils/task.utils';
+import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks } from '../utils/task.utils';
 export type Task = {
   id: string;
   name: string;
@@ -19,17 +19,24 @@ export type TaskNote = {
   note: string;
   inserted_at: string;
 }
+export enum CardViewControls {
+  ACTIVE = 'active',
+  ARCHIVED = 'archived',
+  ALL = 'all'
+}
 export const useTask = () => {
   const supabase = useSupabaseClient()
   const user = useUser()
   const [taskList, setTaskList] = useState<Task[] | []>([])
   const [sortNewestFirst, setSortNewestFirst] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
+  const [value, setValue] = useState<CardViewControls>(CardViewControls.ACTIVE)
+
   useEffect(() => {
     if (user) {
       getTaskList()
     }
-  }, [user, sortNewestFirst])
+  }, [user, sortNewestFirst, value])
   const updateSort = () => setSortNewestFirst(!sortNewestFirst)
 
   const getTaskList = async () => {
@@ -71,6 +78,7 @@ export const useTask = () => {
         } else {
           newResolutionList = sortTaskOldFirst(newResolutionList)
         }
+        newResolutionList = filterTasks(newResolutionList, value)
         setTaskList([...newResolutionList]);
       }
     } catch (error) {
@@ -123,5 +131,22 @@ export const useTask = () => {
       alert('Error updating the active status!')
     }
   }
-  return { taskList, addTask, addTaskNote, updateSort, setActive, newestFist: sortNewestFirst, loading }
+  const setControlValue = (value: CardViewControls) => {
+    setValue(value)
+  }
+  return {
+    taskList,
+    addTask,
+    addTaskNote,
+    updateSort,
+    setActive,
+    newestFist: sortNewestFirst,
+    loading,
+    controlValue: value,
+    setControlValue,
+  }
+}
+
+export const useTaskControl = () => {
+
 }

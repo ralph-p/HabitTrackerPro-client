@@ -4,6 +4,7 @@ import { Button, VStack, Skeleton, HStack } from '@chakra-ui/react'
 import { TaskList } from './TaskList'
 import { AddInput } from './AddInput'
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
+import { ControlBar } from './ControlBar'
 
 type Props = {}
 
@@ -15,7 +16,9 @@ const Main = (props: Props) => {
     updateSort,
     setActive,
     newestFist,
-    loading
+    loading,
+    controlValue,
+    setControlValue,
   } = useTask()
   const submitNewTask = (task: string) => addTask(task)
   return (
@@ -24,6 +27,7 @@ const Main = (props: Props) => {
         <AddInput callBack={submitNewTask} placeholder="Add Task" />
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
+      <ControlBar value={controlValue} setValue={setControlValue} />
       {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} setActive={setActive} /> : <Skeleton height='100vh' />}
     </VStack >
   )
