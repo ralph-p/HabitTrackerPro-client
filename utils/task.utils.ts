@@ -1,8 +1,27 @@
 import moment from "moment";
-import { Task, TaskNote } from "../hooks/useTask.hooks";
+import { NoteObject, Task, TaskNote } from "../hooks/useTask.hooks";
 export const MINUTES_IN_DAY = 1440;
 
+export const formatDate = (dateString: string) => {
+    return moment(dateString).format('DD/MMM/yy')
+}
+
+export const mapNoteObject = (taskNotes: TaskNote[]) => {
+    const notes: NoteObject = {}
+    taskNotes.forEach((note) => {
+        const noteDate = formatDate(note.inserted_at)
+        if (notes[noteDate]) {
+            notes[noteDate].push(note.note)
+        } else {
+            notes[noteDate] = [note.note]
+        }
+    })
+    return notes
+}
+
 export const sortTaskNotesNewFirst = (taskNotes: TaskNote[]) => {
+
+
     return taskNotes.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
 }
 

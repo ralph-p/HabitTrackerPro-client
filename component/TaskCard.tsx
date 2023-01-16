@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Heading, VStack, Text, Box, HStack, Switch } from '@chakra-ui/react'
+import { Card, CardBody, CardHeader, Heading, VStack, Text, Td, HStack, Switch, Table, Tr, Tbody } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Task, TaskNote } from '../hooks/useTask.hooks';
 import moment from "moment"
@@ -23,6 +23,33 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
     return `Updated: ${duration.minutes()}m ago`
   }
   const { cardColor, switchColor } = getCardTheme(task.lastUpdated)
+  const getNoteTable = () => {
+    if (task.noteObject) {
+      return (
+        <Table size="sm" variant="unstyled">
+          <Tbody>
+            {
+              Object.entries(task.noteObject).map((date, index) => (
+                <Tr key={`${date[0]} - ${index}`}>
+                  <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
+                  <Td>
+                    {
+                      date[1].map((note, index) => (
+                        <Tr key={`${date[0]} - ${note} - ${index}`}>
+                          <Text color={'blackAlpha.600'}>{note}</Text>
+                        </Tr>
+                      ))
+                    }
+                  </Td>
+                </Tr>
+              ))
+
+            }
+          </Tbody>
+        </Table>
+      )
+    }
+  }
   return (
     <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">
       <CardHeader paddingBottom={'1'}>
@@ -36,16 +63,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
-        <VStack>
-          {
-            task.notes?.map((note: TaskNote) => (
-              <HStack key={note.id} width="100%" justifyContent="space-between">
-                <Text size="sm" color="blackAlpha.900">{note.note}</Text>
-                <Text size="sm" color="blackAlpha.500">{moment(note.inserted_at).format('DD/MMM/yy')}</Text>
-              </HStack>
-            ))
-          }
-        </VStack>
+        {getNoteTable()}
       </CardBody>
 
 

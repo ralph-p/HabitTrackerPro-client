@@ -1,7 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst } from '../utils/task.utils';
+import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject } from '../utils/task.utils';
 export type Task = {
   id: string;
   name: string;
@@ -9,6 +9,10 @@ export type Task = {
   inserted_at: string;
   lastUpdated: number;
   notes?: TaskNote[];
+  noteObject?: NoteObject;
+}
+export type NoteObject = {
+  [date: string]: string[];
 }
 export type TaskNote = {
   id: string;
@@ -49,13 +53,14 @@ export const useTask = () => {
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
             const duration = moment().diff(moment(updatedString), 'minutes')
-
+            const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: resolution.id,
               name: resolution.name,
               active: resolution.active,
               inserted_at: resolution.inserted_at,
               notes: resNotes,
+              noteObject,
               lastUpdated: duration,
             }
             newResolutionList.push(newRes)
