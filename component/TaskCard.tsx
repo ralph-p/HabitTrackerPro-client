@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader, Heading, VStack, Text, Td, HStack, Switch, Table, Tr, Tbody } from '@chakra-ui/react'
+import { Card, CardBody, CardHeader, Heading, VStack, Text, Td, HStack, Switch, Table, Tr, Tbody, Modal, useDisclosure } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Task, TaskNote } from '../hooks/useTask.hooks';
 import moment from "moment"
@@ -11,6 +11,8 @@ type Props = {
 }
 
 export const TaskCard = ({ task, addNote, updateTask }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
     const duration = moment.duration(task.lastUpdated, 'minutes')
@@ -63,9 +65,11 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
-        {getNoteTable()}
       </CardBody>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        {getNoteTable()}
 
+      </Modal>
 
     </Card>
   )

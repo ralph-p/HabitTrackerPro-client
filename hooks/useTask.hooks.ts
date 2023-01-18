@@ -9,6 +9,7 @@ export type Task = {
   inserted_at: string;
   lastUpdated: number;
   notes?: TaskNote[];
+  description?: string;
   noteObject?: NoteObject;
 }
 export type NoteObject = {
@@ -44,7 +45,7 @@ export const useTask = () => {
       setLoading(true)
       let { data, error, status } = await supabase
         .from('task')
-        .select(`id, name, active, inserted_at, name, updated_at, task_note(id, note, inserted_at)`)
+        .select(`id, name, active, inserted_at, name, description, updated_at, task_note(id, note, inserted_at)`)
         .eq('user_id', user?.id)
       if (error && status !== 406) {
         throw error
@@ -67,6 +68,7 @@ export const useTask = () => {
               active: resolution.active,
               inserted_at: resolution.inserted_at,
               notes: resNotes,
+              description: resolution.description,
               noteObject,
               lastUpdated: duration,
             }
@@ -87,12 +89,12 @@ export const useTask = () => {
     setLoading(false)
   }
 
-  const addTask = async (name: string) => {
+  const addTask = async (name: string, description?: string) => {
     if (name) {
       try {
         const { error } = await supabase
           .from('task')
-          .upsert({ name, active: true, user_id: user?.id })
+          .upsert({ name, active: true, user_id: user?.id, description })
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -107,7 +109,7 @@ export const useTask = () => {
         const { error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: user?.id })
-
+        alert('Updated task!')
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -117,8 +119,6 @@ export const useTask = () => {
     }
   }
   const setActive = async (id: string, active: boolean) => {
-    console.log(id);
-
     try {
       const { error } = await supabase
         .from('task')
