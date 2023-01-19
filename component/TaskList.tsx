@@ -17,7 +17,7 @@ export const TaskList = ({ taskList, addTaskNote, setActive }: Props) => {
       spacing={3}
       width="100%"
       paddingTop="4"
-      overflow='scroll'
+      height="80vh" overflow={'scroll'}
     >
       {
         taskList.map((task) => {

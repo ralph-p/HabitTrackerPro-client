@@ -46,7 +46,8 @@ export const filterTasks = (tasks: Task[], filterValue: CardViewControls): Task[
   }
   return []
 }
-export const getCardTheme = (lastUpdated: number) => {
+export const getCardTheme = (lastUpdated?: number) => {
+  if(!lastUpdated) return { switchColor: 'grey', cardColor: 'green.600' }
   const days = lastUpdated / MINUTES_IN_DAY
   if (days < 1) {
     return { switchColor: 'cyan', cardColor: 'green.600' }

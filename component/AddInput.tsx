@@ -33,7 +33,7 @@ export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIM
         onChange={handleChange}
         color={'blackAlpha.900'}
         backgroundColor="whiteAlpha.700"
-        onKeyDown={(e) => submitOnEnter(e)}
+        onKeyDown={submitOnEnter}
       />
       <InputRightElement width='4.5rem'>
         <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color={'teal'} />
