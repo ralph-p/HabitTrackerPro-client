@@ -1,4 +1,4 @@
-import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Box, Textarea, } from '@chakra-ui/react';
+import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Box, Textarea, FormControl, FormLabel, } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { Task } from '../hooks/useTask.hooks';
 import { getCardTheme } from '../utils/task.utils';
@@ -59,30 +59,36 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
     if (value.length <= 30) setModalTask({ ...modalTask, description: event.target.value })
   }
   const createNewTask = () => {
-    if(modalTask.name && submitNewTask){
+    if (modalTask.name && submitNewTask) {
       submitNewTask(modalTask.name, modalTask.description)
       onClose()
-    } 
+    }
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered >
       <ModalOverlay />
-      <ModalContent backgroundColor={cardColor}>
+      <ModalContent backgroundColor={cardColor} margin="1em">
         <ModalHeader>
-          <Input
-            value={modalTask?.name}
-            onChange={handleNameChange}
-          />
-          <Textarea
-            value={modalTask?.description}
-            onChange={handleDescriptionChange}
-            placeholder='Enter some details about this task...'
-            size='sm'
-          />
-          {updateTask && (
-            <Box>
-              Active: <Switch colorScheme={switchColor} isChecked={modalTask?.active} onChange={() => updateTask(!modalTask?.active)} />
-            </Box>)}
+          <FormControl>
+            <FormLabel>Name</FormLabel>
+            <Input
+              value={modalTask?.name}
+              onChange={handleNameChange}
+            />
+            <FormLabel>Description</FormLabel>
+
+            <Textarea
+              value={modalTask?.description}
+              onChange={handleDescriptionChange}
+              placeholder='Enter some details about this task...'
+              size='sm'
+            />
+            {updateTask && (
+              <Box>
+                <FormLabel >Active</FormLabel>
+                <Switch colorScheme={switchColor} isChecked={modalTask?.active} onChange={() => updateTask(!modalTask?.active)} />
+              </Box>)}
+          </FormControl>
         </ModalHeader>
         <ModalBody>
           <HStack>
@@ -96,7 +102,7 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
           <Button colorScheme='blue' mr={3} onClick={onClose}>
             Close
           </Button>
-          {submitNewTask ? <Button onClick={createNewTask}>Save</Button> : <Button variant='ghost'>Save & Close</Button>}
+          {submitNewTask ? <Button onClick={createNewTask} colorScheme='blue'>Save</Button> : <Button colorScheme='whatsapp'>Save & Close</Button>}
 
         </ModalFooter>
       </ModalContent>
