@@ -118,17 +118,20 @@ export const useTask = () => {
       alert('Enter a task note')
     }
   }
-  const setActive = async (id: string, active: boolean) => {
+
+  const updateTask = async (task: Task) => {
+    console.log(task);
+    
     try {
       const { error } = await supabase
         .from('task')
-        .update({ active })
+        .update({ name: task.name, description: task.description, active: task.active })
         .eq('user_id', user?.id)
-        .eq('id', id)
+        .eq('id', task.id)
       getTaskList()
 
     } catch (error) {
-      alert('Error updating the active status!')
+      alert('Error updating the task status!')
     }
   }
   const setControlValue = (value: CardViewControls) => {
@@ -139,11 +142,11 @@ export const useTask = () => {
     addTask,
     addTaskNote,
     updateSort,
-    setActive,
     newestFist: sortNewestFirst,
     loading,
     controlValue: value,
     setControlValue,
+    updateTask,
   }
 }
 

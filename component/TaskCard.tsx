@@ -9,7 +9,7 @@ import { TaskModal } from './TaskModal';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
-  updateTask: (active: boolean) => void
+  updateTask: (task: Task) => void
 }
 
 export const TaskCard = ({ task, addNote, updateTask }: Props) => {
@@ -27,7 +27,6 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
     return `Updated: ${duration.minutes()}m ago`
   }
   const { cardColor } = getCardTheme(task.lastUpdated)
-
 
   return (
     <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">

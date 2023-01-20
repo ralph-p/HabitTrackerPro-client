@@ -50,7 +50,7 @@ export const getCardTheme = (lastUpdated?: number) => {
   if(!lastUpdated) return { switchColor: 'grey', cardColor: 'green.600' }
   const days = lastUpdated / MINUTES_IN_DAY
   if (days < 1) {
-    return { switchColor: 'cyan', cardColor: 'green.600' }
+    return { switchColor: 'blue', cardColor: 'green.600' }
   }
   if (days < 3) {
     return { switchColor: 'teal', cardColor: 'yellow.400' }

@@ -20,6 +20,7 @@ const Main = (props: Props) => {
     loading,
     controlValue,
     setControlValue,
+    updateTask,
   } = useTask()
   const submitNewTask = (task: string, description?: string) => addTask(task, description)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -33,7 +34,7 @@ const Main = (props: Props) => {
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
       <ControlBar value={controlValue} setValue={setControlValue} />
-      {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} setActive={setActive} /> : <Skeleton height='100vh' />}
+      {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} updateTask={updateTask} /> : <Skeleton height='100vh' />}
     </VStack >
   )
 }
