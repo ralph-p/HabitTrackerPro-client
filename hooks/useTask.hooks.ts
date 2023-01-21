@@ -1,16 +1,18 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks } from '../utils/task.utils';
+import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
 export type Task = {
   id: string;
   name: string;
   active: boolean;
+  description?: string;
   inserted_at: string;
   lastUpdated: number;
   notes?: TaskNote[];
   noteObject?: NoteObject;
 }
+
 export type NoteObject = {
   [date: string]: string[];
 }
@@ -44,7 +46,7 @@ export const useTask = () => {
       setLoading(true)
       let { data, error, status } = await supabase
         .from('task')
-        .select(`id, name, active, inserted_at, name, updated_at, task_note(id, note, inserted_at)`)
+        .select(`id, name, active, inserted_at, name, description, updated_at, task_note(id, note, inserted_at)`)
         .eq('user_id', user?.id)
       if (error && status !== 406) {
         throw error
@@ -59,7 +61,7 @@ export const useTask = () => {
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
-            const duration = moment().diff(moment(updatedString), 'minutes')
+            const duration = moment().diff(moment(updatedString), seconds)
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: resolution.id,
@@ -67,6 +69,7 @@ export const useTask = () => {
               active: resolution.active,
               inserted_at: resolution.inserted_at,
               notes: resNotes,
+              description: resolution.description,
               noteObject,
               lastUpdated: duration,
             }
@@ -87,12 +90,12 @@ export const useTask = () => {
     setLoading(false)
   }
 
-  const addTask = async (name: string) => {
+  const addTask = async (name: string, description?: string) => {
     if (name) {
       try {
         const { error } = await supabase
           .from('task')
-          .upsert({ name, active: true, user_id: user?.id })
+          .upsert({ name, active: true, user_id: user?.id, description })
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -107,7 +110,7 @@ export const useTask = () => {
         const { error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: user?.id })
-
+        alert('Updated task!')
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -116,19 +119,20 @@ export const useTask = () => {
       alert('Enter a task note')
     }
   }
-  const setActive = async (id: string, active: boolean) => {
-    console.log(id);
+
+  const updateTask = async (task: Task) => {
+    console.log(task);
 
     try {
       const { error } = await supabase
         .from('task')
-        .update({ active })
+        .update({ name: task.name, description: task.description, active: task.active })
         .eq('user_id', user?.id)
-        .eq('id', id)
+        .eq('id', task.id)
       getTaskList()
 
     } catch (error) {
-      alert('Error updating the active status!')
+      alert('Error updating the task status!')
     }
   }
   const setControlValue = (value: CardViewControls) => {
@@ -139,11 +143,11 @@ export const useTask = () => {
     addTask,
     addTaskNote,
     updateSort,
-    setActive,
     newestFist: sortNewestFirst,
     loading,
     controlValue: value,
     setControlValue,
+    updateTask,
   }
 }
 

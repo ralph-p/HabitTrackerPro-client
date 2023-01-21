@@ -14,6 +14,11 @@ export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIM
     const value = event?.target?.value
     if (value.length <= characterLimit) setInputValue(event.target.value)
   }
+  const submitOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      addButtonOnClick()
+    }
+  }
   const addButtonOnClick = () => {
     callBack(inputValue)
     setInputValue('')
@@ -28,6 +33,7 @@ export const AddInput = ({ callBack, placeholder, characterLimit = CHARACTER_LIM
         onChange={handleChange}
         color={'blackAlpha.900'}
         backgroundColor="whiteAlpha.700"
+        onKeyDown={submitOnEnter}
       />
       <InputRightElement width='4.5rem'>
         <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color={'teal'} />

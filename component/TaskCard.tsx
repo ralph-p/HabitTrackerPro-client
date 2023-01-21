@@ -1,19 +1,23 @@
-import { Card, CardBody, CardHeader, Heading, VStack, Text, Td, HStack, Switch, Table, Tr, Tbody } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import { Task, TaskNote } from '../hooks/useTask.hooks';
+import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton } from '@chakra-ui/react'
+import React from 'react'
+import { Task } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
-import { getCardTheme } from '../utils/task.utils';
+import { getCardTheme, seconds } from '../utils/task.utils';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { TaskModal } from './TaskModal';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
-  updateTask: (active: boolean) => void
+  updateTask: (task: Task) => void
 }
 
 export const TaskCard = ({ task, addNote, updateTask }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
-    const duration = moment.duration(task.lastUpdated, 'minutes')
+    const duration = moment.duration(task.lastUpdated, seconds)
     if (duration.days() > 0) {
       return `Updated: ${duration.days()}d ${duration.hours()}h ago`
     }
@@ -22,34 +26,8 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
     }
     return `Updated: ${duration.minutes()}m ago`
   }
-  const { cardColor, switchColor } = getCardTheme(task.lastUpdated)
-  const getNoteTable = () => {
-    if (task.noteObject) {
-      return (
-        <Table size="sm" variant="unstyled">
-          <Tbody>
-            {
-              Object.entries(task.noteObject).map((date, index) => (
-                <Tr key={`${date[0]} - ${index}`}>
-                  <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
-                  <Td>
-                    {
-                      date[1].map((note, index) => (
-                        <Tr key={`${date[0]} - ${note} - ${index}`}>
-                          <Text color={'blackAlpha.600'}>{note}</Text>
-                        </Tr>
-                      ))
-                    }
-                  </Td>
-                </Tr>
-              ))
+  const { cardColor } = getCardTheme(task.lastUpdated)
 
-            }
-          </Tbody>
-        </Table>
-      )
-    }
-  }
   return (
     <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">
       <CardHeader paddingBottom={'1'}>
@@ -57,15 +35,24 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
           <Heading size="md" color="blackAlpha.800">
             {task.name}
           </Heading>
-          <Text color="blackAlpha.700">Active: <Switch colorScheme={switchColor} isChecked={task.active} onChange={() => updateTask(!task.active)} /></Text>
+          <Text color="blackAlpha.700">
+            <IconButton
+              aria-label={'open-task-modal'}
+              size='sm'
+              icon={<HamburgerIcon />}
+              variant='ghost'
+              colorScheme='teal'
+              border='0px'
+              onClick={onOpen}
+            />
+          </Text>
         </HStack>
       </CardHeader>
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
-        {getNoteTable()}
       </CardBody>
-
+      <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask} />
 
     </Card>
   )

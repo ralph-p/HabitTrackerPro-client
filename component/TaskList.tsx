@@ -6,10 +6,10 @@ import { TaskCard } from './TaskCard'
 type Props = {
   taskList: Task[],
   addTaskNote: (taskId: string, note: string) => Promise<void>
-  setActive: (id: string, active: boolean) => void;
+  updateTask: (task: Task) => void;
 }
 
-export const TaskList = ({ taskList, addTaskNote, setActive }: Props) => {
+export const TaskList = ({ taskList, addTaskNote, updateTask }: Props) => {
   return (
     <VStack
       align='stretch'
@@ -17,11 +17,11 @@ export const TaskList = ({ taskList, addTaskNote, setActive }: Props) => {
       spacing={3}
       width="100%"
       paddingTop="4"
-      overflow='scroll'
+      height="80vh" overflow={'scroll'}
     >
       {
         taskList.map((task) => {
-          const updateTask = (active: boolean) => setActive(task.id, active)
+          // const updateTask = (active: boolean) => setActive(task.id, active)
           return (<TaskCard key={task.id} task={task} addNote={addTaskNote} updateTask={updateTask} />)
         })
       }

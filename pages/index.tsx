@@ -10,7 +10,7 @@ const Home = () => {
   const supabase = useSupabaseClient()
 
   return (
-    <Flex alignItems="start" justifyContent="center" background="blackAlpha.900">
+    <Flex alignItems="start" justifyContent="center" background="blackAlpha.900" height="100%">
       <Flex direction="column" padding="10">
         <VStack spacing={2}>
           <HStack>
