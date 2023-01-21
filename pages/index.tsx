@@ -9,8 +9,7 @@ import { useGSDContext } from '../context/context'
 const Home = () => {
   // const session = useSession()
   const supabase = useSupabaseClient()
-  const { session, user } = useGSDContext()
-  console.log(session, user);
+  const { session } = useGSDContext()
 
   return (
     <Flex alignItems="start" justifyContent="center" background="blackAlpha.900" height="100%">

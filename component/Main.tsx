@@ -5,21 +5,23 @@ import { TaskList } from './TaskList'
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
 import { ControlBar } from './ControlBar'
 import { TaskModal } from './TaskModal'
+import { useGSDContext } from '../context/context'
 
 type Props = {}
 
 const Main = (props: Props) => {
-  const {
-    taskList,
-    addTask,
-    addTaskNote,
-    updateSort,
-    newestFist,
-    loading,
-    controlValue,
-    setControlValue,
-    updateTask,
-  } = useTask()
+  // const {
+  //   addTask,
+  //   addTaskNote,
+  //   updateSort,
+  //   newestFist,
+  //   loading,
+  //   controlValue,
+  //   setControlValue,
+  //   updateTask,
+  // } = useTask()
+  const { addTask, loading, newestFist, updateSort } = useGSDContext()
+
   const submitNewTask = (task: string, description?: string) => addTask(task, description)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -31,7 +33,7 @@ const Main = (props: Props) => {
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
       <ControlBar value={controlValue} setValue={setControlValue} />
-      {!loading ? <TaskList taskList={taskList} addTaskNote={addTaskNote} updateTask={updateTask} /> : <Skeleton height='100vh' />}
+      {!loading ? <TaskList addTaskNote={addTaskNote} updateTask={updateTask} /> : <Skeleton height='100vh' />}
     </VStack >
   )
 }

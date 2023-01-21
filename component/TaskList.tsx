@@ -1,15 +1,10 @@
 import { StackDivider, VStack, } from '@chakra-ui/react'
 import React from 'react'
-import { Task } from '../hooks/useTask.hooks'
+import { useGSDContext } from '../context/context'
 import { TaskCard } from './TaskCard'
 
-type Props = {
-  taskList: Task[],
-  addTaskNote: (taskId: string, note: string) => Promise<void>
-  updateTask: (task: Task) => void;
-}
-
-export const TaskList = ({ taskList, addTaskNote, updateTask }: Props) => {
+export const TaskList = () => {
+  const { taskList, addTaskNote, updateTask } = useGSDContext()
   return (
     <VStack
       align='stretch'
@@ -20,8 +15,7 @@ export const TaskList = ({ taskList, addTaskNote, updateTask }: Props) => {
       height="80vh" overflow={'scroll'}
     >
       {
-        taskList.map((task) => {
-          // const updateTask = (active: boolean) => setActive(task.id, active)
+        taskList?.map((task) => {
           return (<TaskCard key={task.id} task={task} addNote={addTaskNote} updateTask={updateTask} />)
         })
       }
