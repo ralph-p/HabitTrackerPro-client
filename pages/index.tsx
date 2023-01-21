@@ -4,10 +4,13 @@ import { Flex, Heading, VStack, Button, HStack, Box } from '@chakra-ui/react'
 import Main from '../component/Main'
 import { useState } from 'react'
 import Account from '../component/Account'
+import { useGSDContext } from '../context/context'
 
 const Home = () => {
-  const session = useSession()
+  // const session = useSession()
   const supabase = useSupabaseClient()
+  const { session, user } = useGSDContext()
+  console.log(session, user);
 
   return (
     <Flex alignItems="start" justifyContent="center" background="blackAlpha.900" height="100%">

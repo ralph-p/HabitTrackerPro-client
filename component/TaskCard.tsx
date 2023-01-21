@@ -1,11 +1,12 @@
-import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton } from '@chakra-ui/react'
-import React from 'react'
+import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton, Box } from '@chakra-ui/react'
+import React, { useContext } from 'react'
 import { Task } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
 import { getCardTheme, seconds } from '../utils/task.utils';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { TaskModal } from './TaskModal';
+import { GSDContext, useGSDContext } from '../context/context';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
@@ -27,6 +28,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
     return `Updated: ${duration.minutes()}m ago`
   }
   const { cardColor } = getCardTheme(task.lastUpdated)
+
 
   return (
     <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">
@@ -50,7 +52,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
       </CardHeader>
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
-        <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
+        <Box width={'100%'}><AddInput callBack={submitNote} placeholder={`${task.name} note`} /></Box>
       </CardBody>
       <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask} />
 
