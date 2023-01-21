@@ -15,7 +15,6 @@ const Main = (props: Props) => {
     addTask,
     addTaskNote,
     updateSort,
-    setActive,
     newestFist,
     loading,
     controlValue,
@@ -28,9 +27,8 @@ const Main = (props: Props) => {
   return (
     <VStack paddingTop={4}>
       <HStack>
-      <TaskModal isOpen={isOpen} onClose={onClose} submitNewTask={submitNewTask}/>
-      <Button onClick={onOpen}>Add Task</Button>
-        {/* <AddInput callBack={submitNewTask} placeholder="Add Task" /> */}
+        <TaskModal isOpen={isOpen} onClose={onClose} submitNewTask={submitNewTask} />
+        <Button onClick={onOpen}>Add Task</Button>
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
       <ControlBar value={controlValue} setValue={setControlValue} />
