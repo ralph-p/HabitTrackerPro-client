@@ -32,8 +32,8 @@ const Main = (props: Props) => {
         <Button onClick={onOpen}>Add Task</Button>
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
-      <ControlBar value={controlValue} setValue={setControlValue} />
-      {!loading ? <TaskList addTaskNote={addTaskNote} updateTask={updateTask} /> : <Skeleton height='100vh' />}
+      <ControlBar />
+      <TaskList />
     </VStack >
   )
 }

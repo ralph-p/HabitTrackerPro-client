@@ -45,7 +45,9 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
               variant='ghost'
               colorScheme='teal'
               border='0px'
-              onClick={onOpen}
+              // onClick={onOpen}
+              as="a"
+              href={`/task/${task.id}`}
             />
           </Text>
         </HStack>

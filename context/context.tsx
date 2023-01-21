@@ -1,6 +1,6 @@
 import { useSession } from '@supabase/auth-helpers-react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Task, useTask } from '../hooks/useTask.hooks';
+import { CardViewControls, Task, useTask } from '../hooks/useTask.hooks';
 
 
 interface GSDContextProps {
@@ -15,6 +15,8 @@ interface GSDContextProps {
   updateSort: () => void,
   addTaskNote: (taskId: string, note: string) => void;
   updateTask: (task: Task) => void;
+  controlValue: CardViewControls;
+  setControlValue: (value: CardViewControls) => void;
 }
 export const GSDContext = createContext<GSDContextProps>({
   session: null,
@@ -26,8 +28,10 @@ export const GSDContext = createContext<GSDContextProps>({
   updateSort: () => { },
   addTaskNote: () => { },
   updateTask: () => { },
+  controlValue: CardViewControls.ACTIVE,
   newestFist: true,
   taskList: [],
+  setControlValue: () => { },
 })
 
 
@@ -67,7 +71,9 @@ export const Context = ({ children }) => {
       updateSort,
       newestFist,
       addTaskNote,
-      updateTask
+      updateTask,
+      controlValue,
+      setControlValue,
     }}>{children}</GSDContext.Provider>
   )
 }
