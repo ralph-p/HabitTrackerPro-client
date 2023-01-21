@@ -6,12 +6,13 @@ export type Task = {
   id: string;
   name: string;
   active: boolean;
+  description?: string;
   inserted_at: string;
   lastUpdated: number;
   notes?: TaskNote[];
-  description?: string;
   noteObject?: NoteObject;
 }
+
 export type NoteObject = {
   [date: string]: string[];
 }
@@ -60,7 +61,7 @@ export const useTask = () => {
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
-            const duration = moment().diff(moment(updatedString), 'minutes')
+            const duration = moment().diff(moment(updatedString), 'seconds')
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: resolution.id,
@@ -121,7 +122,7 @@ export const useTask = () => {
 
   const updateTask = async (task: Task) => {
     console.log(task);
-    
+
     try {
       const { error } = await supabase
         .from('task')

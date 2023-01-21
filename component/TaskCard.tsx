@@ -17,7 +17,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
 
   const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
-    const duration = moment.duration(task.lastUpdated, 'minutes')
+    const duration = moment.duration(task.lastUpdated, 'seconds')
     if (duration.days() > 0) {
       return `Updated: ${duration.days()}d ${duration.hours()}h ago`
     }
@@ -36,12 +36,12 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
             {task.name}
           </Heading>
           <Text color="blackAlpha.700">
-            <IconButton 
-              aria-label={'open-task-modal'} 
-              size='sm' 
-              icon={<HamburgerIcon />} 
+            <IconButton
+              aria-label={'open-task-modal'}
+              size='sm'
+              icon={<HamburgerIcon />}
               variant='ghost'
-              colorScheme='teal' 
+              colorScheme='teal'
               border='0px'
               onClick={onOpen}
             />
@@ -52,7 +52,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
         <Text color="gray.900">{lastUpdated()}</Text>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
       </CardBody>
-      <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask}/>
+      <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask} />
 
     </Card>
   )

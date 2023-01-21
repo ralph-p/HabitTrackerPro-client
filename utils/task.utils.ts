@@ -1,7 +1,7 @@
 import moment from "moment";
 import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/useTask.hooks";
 export const MINUTES_IN_DAY = 1440;
-
+export const SECONDS_IN_DAY = 86400;
 export const formatDate = (dateString: string) => {
   return moment(dateString).format('DD/MMM/yy')
 }
@@ -47,8 +47,8 @@ export const filterTasks = (tasks: Task[], filterValue: CardViewControls): Task[
   return []
 }
 export const getCardTheme = (lastUpdated?: number) => {
-  if(!lastUpdated) return { switchColor: 'grey', cardColor: 'green.600' }
-  const days = lastUpdated / MINUTES_IN_DAY
+  if (!lastUpdated) return { switchColor: 'grey', cardColor: 'green.600' }
+  const days = lastUpdated / SECONDS_IN_DAY
   if (days < 1) {
     return { switchColor: 'blue', cardColor: 'green.600' }
   }

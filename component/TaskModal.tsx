@@ -1,5 +1,5 @@
 import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Box, Textarea, FormControl, FormLabel, } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Task } from '../hooks/useTask.hooks';
 import { getCardTheme } from '../utils/task.utils';
 
@@ -49,21 +49,12 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
   const [modalTask, setModalTask] = useState<Task>(task || newTask)
   const { cardColor, switchColor } = getCardTheme(modalTask?.lastUpdated)
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event?.target?.value
-    if (value.length <= 30) setModalTask({ ...modalTask, name: event.target.value })
-  }
-
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = event?.target?.value
-    if (value.length <= 30) setModalTask({ ...modalTask, description: event.target.value })
-  }
-  const updateModalTask = (value: string | boolean, key: string) => {    
-    setModalTask({...modalTask, [key]:value})
+  const updateModalTask = (value: string | boolean, key: string) => {
+    setModalTask({ ...modalTask, [key]: value })
   }
   const saveAndCloseModal = () => {
     if (updateTask) {
-      updateTask({...modalTask})
+      updateTask({ ...modalTask })
       onClose();
     }
   }
@@ -84,11 +75,11 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
               value={modalTask?.name}
               onChange={(event) => updateModalTask(event?.target?.value, 'name')}
             />
-            <FormLabel  color={'blackAlpha.500'} fontWeight='bold'>Description</FormLabel>
+            <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Description</FormLabel>
 
             <Textarea
               value={modalTask?.description}
-              onChange={handleDescriptionChange}
+              onChange={(event) => updateModalTask(event?.target?.value, 'description')}
               placeholder='Enter some details about this task...'
               size='sm'
             />
@@ -111,7 +102,7 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
           <Button colorScheme='blue' mr={3} onClick={onClose}>
             Close
           </Button>
-          {submitNewTask ? <Button onClick={createNewTask} colorScheme='blue'>Save</Button> : <Button colorScheme='whatsapp' onClick={saveAndCloseModal}>Save & Close</Button>}
+          {submitNewTask ? <Button onClick={createNewTask} colorScheme='whatsapp'>Save</Button> : <Button colorScheme='whatsapp' onClick={saveAndCloseModal}>Save & Close</Button>}
 
         </ModalFooter>
       </ModalContent>
