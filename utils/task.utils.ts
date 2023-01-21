@@ -2,6 +2,7 @@ import moment from "moment";
 import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/useTask.hooks";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
+export const seconds = 'seconds';
 export const formatDate = (dateString: string) => {
   return moment(dateString).format('DD/MMM/yy')
 }

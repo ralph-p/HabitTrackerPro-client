@@ -1,9 +1,9 @@
-import { Card, CardBody, CardHeader, Heading, VStack, Text, Td, HStack, Switch, Table, Tr, Tbody, Modal, useDisclosure, IconButton, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import { Task, TaskNote } from '../hooks/useTask.hooks';
+import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton } from '@chakra-ui/react'
+import React from 'react'
+import { Task } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
-import { getCardTheme } from '../utils/task.utils';
+import { getCardTheme, seconds } from '../utils/task.utils';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { TaskModal } from './TaskModal';
 type Props = {
@@ -17,7 +17,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
 
   const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
-    const duration = moment.duration(task.lastUpdated, 'seconds')
+    const duration = moment.duration(task.lastUpdated, seconds)
     if (duration.days() > 0) {
       return `Updated: ${duration.days()}d ${duration.hours()}h ago`
     }

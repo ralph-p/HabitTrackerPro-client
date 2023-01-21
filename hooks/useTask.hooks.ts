@@ -1,7 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNotesOldFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks } from '../utils/task.utils';
+import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
 export type Task = {
   id: string;
   name: string;
@@ -61,7 +61,7 @@ export const useTask = () => {
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
-            const duration = moment().diff(moment(updatedString), 'seconds')
+            const duration = moment().diff(moment(updatedString), seconds)
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: resolution.id,
