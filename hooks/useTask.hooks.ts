@@ -46,7 +46,16 @@ export const useTask = () => {
       setLoading(true)
       let { data, error, status } = await supabase
         .from('task')
-        .select(`id, name, active, inserted_at, name, description, updated_at, task_note(id, note, inserted_at)`)
+        .select(`id, 
+          name, 
+          active, 
+          inserted_at, 
+          name, 
+          description, 
+          updated_at, 
+          task_note(id, note, inserted_at),
+          subtask(id, name, description, complete)
+        `)
         .eq('user_id', user?.id)
       if (error && status !== 406) {
         throw error
