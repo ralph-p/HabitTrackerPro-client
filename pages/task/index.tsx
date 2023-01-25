@@ -1,25 +1,15 @@
 import React from 'react'
-import { useTask } from '../hooks/useTask.hooks'
+
 import { Button, VStack, Skeleton, HStack, useDisclosure } from '@chakra-ui/react'
-import { TaskList } from './TaskList'
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
-import { ControlBar } from './ControlBar'
-import { TaskModal } from './TaskModal'
-import { useGSDContext } from '../context/context'
+import { useGSDContext } from '../../context/context'
+import { TaskModal } from '../../component/TaskModal'
+import { ControlBar } from '../../component/ControlBar'
+import { TaskList } from '../../component/TaskList'
 
 type Props = {}
 
-const Main = (props: Props) => {
-  // const {
-  //   addTask,
-  //   addTaskNote,
-  //   updateSort,
-  //   newestFist,
-  //   loading,
-  //   controlValue,
-  //   setControlValue,
-  //   updateTask,
-  // } = useTask()
+const TaskPage = (props: Props) => {
   const { addTask, loading, newestFist, updateSort } = useGSDContext()
 
   const submitNewTask = (task: string, description?: string) => addTask(task, description)
@@ -29,7 +19,7 @@ const Main = (props: Props) => {
     <VStack paddingTop={4}>
       <HStack>
         <TaskModal isOpen={isOpen} onClose={onClose} submitNewTask={submitNewTask} />
-        <Button onClick={onOpen}>Add Task</Button>
+        <Button onClick={onOpen}  colorScheme="facebook">Add Task</Button>
         <Button size="sm" onClick={updateSort} colorScheme='teal'>{newestFist ? <ArrowDownIcon /> : <ArrowUpIcon />}</Button>
       </HStack>
       <ControlBar />
@@ -38,4 +28,4 @@ const Main = (props: Props) => {
   )
 }
 
-export default Main
+export default TaskPage

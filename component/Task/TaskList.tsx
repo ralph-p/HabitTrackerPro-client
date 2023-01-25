@@ -1,4 +1,4 @@
-import { StackDivider, VStack, } from '@chakra-ui/react'
+import { Box, StackDivider, VStack, } from '@chakra-ui/react'
 import React from 'react'
 import { useGSDContext } from '../context/context'
 import { TaskCard } from './TaskCard'
@@ -16,9 +16,10 @@ export const TaskList = () => {
     >
       {
         taskList?.map((task) => {
-          return (<TaskCard key={task.id} task={task} addNote={addTaskNote} updateTask={updateTask} />)
+          return (<TaskCard key={task.id} task={task} />)
         })
       }
+      <Box />
     </VStack>
   )
 }

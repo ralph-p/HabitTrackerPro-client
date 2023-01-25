@@ -130,8 +130,6 @@ export const useTask = () => {
   }
 
   const updateTask = async (task: Task) => {
-    console.log(task);
-
     try {
       const { error } = await supabase
         .from('task')

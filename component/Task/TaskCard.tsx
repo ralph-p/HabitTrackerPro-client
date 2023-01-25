@@ -6,16 +6,15 @@ import { AddInput } from './AddInput';
 import { getCardTheme, seconds } from '../utils/task.utils';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { TaskModal } from './TaskModal';
+import { useGSDContext } from '../context/context';
 type Props = {
   task: Task;
-  addNote: (taskId: string, note: string) => void;
-  updateTask: (task: Task) => void
 }
 
-export const TaskCard = ({ task, addNote, updateTask }: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+export const TaskCard = ({ task }: Props) => {
+  const { addTaskNote, updateTask } = useGSDContext()
 
-  const submitNote = (note: string) => addNote(task.id, note)
+  const submitNote = (note: string) => addTaskNote(task.id, note)
   const lastUpdated = () => {
     const duration = moment.duration(task.lastUpdated, seconds)
     if (duration.days() > 0) {
@@ -55,8 +54,6 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
         <Text color="gray.900">{lastUpdated()}</Text>
         <Box width={'100%'}><AddInput callBack={submitNote} placeholder={`${task.name} note`} /></Box>
       </CardBody>
-      <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask} />
-
     </Card>
   )
 }

@@ -1,25 +1,25 @@
-import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td } from '@chakra-ui/react'
+import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { AddInput } from '../../component/AddInput'
 import { useGSDContext } from '../../context/context'
 
 type Props = {}
 
 const TaskPage = (props: Props) => {
-  const { session, user, taskList } = useGSDContext()
   const router = useRouter()
+  const { session, user, taskList, addTaskNote } = useGSDContext()
+  const { id } = router.query
+  const submitNote = (note: string) => addTaskNote(id as string, note)
+
   if (!session) {
     return <Spinner />
   }
-  const { id } = router.query
   const task = taskList.find((t) => t.id === id)
-  console.log(taskList);
-
   return task && (
-    <Flex alignItems="start" justifyContent="center" background="blackAlpha.900" height="100%">
-      <Flex direction="column" padding="10">
         <VStack spacing={2}>
-          <Text>{id}</Text>
+          <Text>{task.name}</Text>
+          <Flex width={'100%'} justifyContent='center'><AddInput callBack={submitNote} placeholder={`${task.name} note`} /></Flex>
           <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
             <Tbody>
               {
@@ -42,8 +42,6 @@ const TaskPage = (props: Props) => {
             </Tbody>
           </Table>
         </VStack>
-      </Flex>
-    </Flex>
   )
 }
 

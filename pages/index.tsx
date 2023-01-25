@@ -12,24 +12,16 @@ const Home = () => {
   const { session } = useGSDContext()
 
   return (
-    <Flex alignItems="start" justifyContent="center" background="blackAlpha.900" height="100%">
-      <Flex direction="column" padding="10">
-        <VStack spacing={2}>
-          <HStack>
-            <Heading as='h1' size="xl">GSD list</Heading>
-            {session && <Account session={session} />}
-          </HStack>
-          <Box width="70%">
-            <Heading as='h3' size='sm'>A simple web app to help you Get Stuff Done.</Heading>
-          </Box>
+    <>
+      {!session ? (
+        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
+      ) : (
+        <VStack spacing={3} alignItems={'normal'} padding="2em">
+          <Button as={'a'} href="/task" colorScheme="facebook">List of things you want to do more often</Button>
+          <Button as={'a'} href="/todo" colorScheme="facebook">List of things you want to get done</Button>
         </VStack>
-        {!session ? (
-          <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
-        ) : (
-          <Main />
-        )}
-      </Flex>
-    </Flex>
+      )}
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import { SessionContextProvider, useSession } from '@supabase/auth-helpers-react
 import { useState } from 'react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { Context } from '../context/context'
+import Layout from '../component/Layout'
 
 export default function App({ Component, pageProps }: AppProps) {
   const [supabase] = useState(() => createBrowserSupabaseClient())
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <ChakraProvider>
       <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession}>
         <Context>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </Context>
       </SessionContextProvider>
     </ChakraProvider>
