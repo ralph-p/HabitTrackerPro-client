@@ -12,7 +12,8 @@ export const TaskList = () => {
       spacing={3}
       width="100%"
       paddingTop="4"
-      height="80vh" overflow={'scroll'}
+      height="70vh" 
+      overflow={'scroll'}
     >
       {
         taskList?.map((task) => {

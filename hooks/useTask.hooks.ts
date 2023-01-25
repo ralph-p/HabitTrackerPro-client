@@ -53,8 +53,7 @@ export const useTask = () => {
           name, 
           description, 
           updated_at, 
-          task_note(id, note, inserted_at),
-          subtask(id, name, description, complete)
+          task_note(id, note, inserted_at)
         `)
         .eq('user_id', user?.id)
       if (error && status !== 406) {
