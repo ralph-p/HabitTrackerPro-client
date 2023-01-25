@@ -4,9 +4,8 @@ import { Task } from '../hooks/useTask.hooks';
 import moment from "moment"
 import { AddInput } from './AddInput';
 import { getCardTheme, seconds } from '../utils/task.utils';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { SettingsIcon } from '@chakra-ui/icons';
 import { TaskModal } from './TaskModal';
-import { GSDContext, useGSDContext } from '../context/context';
 type Props = {
   task: Task;
   addNote: (taskId: string, note: string) => void;
@@ -41,7 +40,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
             <IconButton
               aria-label={'open-task-modal'}
               size='sm'
-              icon={<HamburgerIcon />}
+              icon={<SettingsIcon />}
               variant='ghost'
               colorScheme='teal'
               border='0px'

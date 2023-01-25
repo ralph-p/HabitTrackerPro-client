@@ -64,6 +64,8 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
       onClose()
     }
   }
+  console.log(task?.noteObject);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered >
       <ModalOverlay />
