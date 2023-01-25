@@ -5,7 +5,7 @@ import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
 import { useGSDContext } from '../../context/context'
 import { TaskModal } from '../../component/TaskModal'
 import { ControlBar } from '../../component/ControlBar'
-import { TaskList } from '../../component/TaskList'
+import { TaskList } from '../../component/Task/TaskList'
 
 type Props = {}
 

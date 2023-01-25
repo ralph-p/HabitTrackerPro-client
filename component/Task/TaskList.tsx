@@ -1,6 +1,6 @@
 import { Box, StackDivider, VStack, } from '@chakra-ui/react'
 import React from 'react'
-import { useGSDContext } from '../context/context'
+import { useGSDContext } from '../../context/context'
 import { TaskCard } from './TaskCard'
 
 export const TaskList = () => {
