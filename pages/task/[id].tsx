@@ -1,29 +1,58 @@
-import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box } from '@chakra-ui/react'
+import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea, ButtonGroup, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import { AddInput } from '../../component/AddInput'
 import { useGSDContext } from '../../context/context'
+import { Task } from '../../hooks/useTask.hooks'
 
 type Props = {}
-
+const newTask = {
+  id: '',
+  name: '',
+  description: '',
+  inserted_at: '',
+  lastUpdated: 0,
+  active: true,
+}
 const TaskPage = (props: Props) => {
   const router = useRouter()
-  const { session, user, taskList, addTaskNote } = useGSDContext()
+  const { session, user, taskList, addTaskNote, updateTask } = useGSDContext()
   const { id } = router.query
   const submitNote = (note: string) => addTaskNote(id as string, note)
-
+  const task = taskList.find((t) => t.id === id)
+  const [taskState, setTaskState] = useState<Task>(task || newTask)
+  const updateStatelTask = (value: string | boolean, key: string) => {
+    setTaskState({ ...taskState, [key]: value })
+  }
   if (!session) {
     return <Spinner />
   }
-  const task = taskList.find((t) => t.id === id)
+  
   return task && (
         <VStack spacing={2}>
-          <Text>{task.name}</Text>
-          <Flex width={'100%'} justifyContent='center'><AddInput callBack={submitNote} placeholder={`${task.name} note`} /></Flex>
+          <VStack width={"100%"} spacing={3}>
+          <Textarea
+              value={taskState?.name}
+              onChange={(event) => updateStatelTask(event?.target?.value, 'name')}
+              color="blackAlpha.700"
+              borderColor={'facebook.900'}
+            />
+
+            <Textarea
+              value={taskState?.description}
+              onChange={(event) => updateStatelTask(event?.target?.value, 'description')}
+              placeholder='Enter some details about this task...'
+              color="blackAlpha.700"
+              borderColor={'facebook.900'}
+              size='sm'
+            />
+            <ButtonGroup><Button>Edit</Button><Button>Save</Button></ButtonGroup>
+          <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
+          </VStack>
           <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
             <Tbody>
               {
-                Object.entries(task.noteObject).map((date, index) => {
+                Object.entries(task?.noteObject).map((date, index) => {
                   return (
                     <Tr key={`${date[0]} - ${index}`}>
                       <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
