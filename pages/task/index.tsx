@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Button, VStack, Skeleton, HStack, useDisclosure } from '@chakra-ui/react'
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
@@ -10,11 +10,15 @@ import { TaskList } from '../../component/Task/TaskList'
 type Props = {}
 
 const TaskPage = (props: Props) => {
-  const { addTask, loading, newestFist, updateSort } = useGSDContext()
+  const { addTask, loading, newestFist, updateSort, user, getTaskList, controlValue } = useGSDContext()
 
   const submitNewTask = (task: string, description?: string) => addTask(task, description)
   const { isOpen, onOpen, onClose } = useDisclosure()
-
+  useEffect(() => {  
+    if (user && user?.id) {
+      getTaskList()
+    }
+  }, [user, controlValue])
   return (
     <VStack paddingTop={4}>
       <HStack>

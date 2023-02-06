@@ -1,4 +1,4 @@
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
 import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
@@ -28,17 +28,13 @@ export enum CardViewControls {
 }
 export const useTask = () => {
   const supabase = useSupabaseClient()
-  const user = useUser()
+  const session = useSession()
   const [taskList, setTaskList] = useState<Task[] | []>([])
   const [sortNewestFirst, setSortNewestFirst] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [value, setValue] = useState<CardViewControls>(CardViewControls.ACTIVE)
 
-  useEffect(() => {
-    if (user) {
-      getTaskList()
-    }
-  }, [user, sortNewestFirst, value])
+
   const updateSort = () => setSortNewestFirst(!sortNewestFirst)
 
   const getTaskList = async () => {
@@ -55,42 +51,42 @@ export const useTask = () => {
           updated_at, 
           task_note(id, note, inserted_at)
         `)
-        .eq('user_id', user?.id)
+        .eq('user_id', session?.user?.id)
       if (error && status !== 406) {
         throw error
       }
       if (data) {
-        let newResolutionList: Task[] = []
-        data.map((resolution) => {
-          if (Array.isArray(resolution.task_note)) {
-            let resNotes: TaskNote[] | [] = resolution.task_note.map(
+        let newTaskList: Task[] = []
+        data.map((task) => {
+          if (Array.isArray(task.task_note)) {
+            let resNotes: TaskNote[] | [] = task.task_note.map(
               (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
             )
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
-            const updatedString = resNotes.length ? resNotes[0].inserted_at : resolution.inserted_at
+            const updatedString = resNotes.length ? resNotes[0].inserted_at : task.inserted_at
             const duration = moment().diff(moment(updatedString), seconds)
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
-              id: resolution.id,
-              name: resolution.name,
-              active: resolution.active,
-              inserted_at: resolution.inserted_at,
+              id: task.id,
+              name: task.name,
+              active: task.active,
+              inserted_at: task.inserted_at,
               notes: resNotes,
-              description: resolution.description,
+              description: task.description,
               noteObject,
               lastUpdated: duration,
             }
-            newResolutionList.push(newRes)
+            newTaskList.push(newRes)
           }
         })
         if (sortNewestFirst) {
-          newResolutionList = sortTaskNewFirst(newResolutionList)
+          newTaskList = sortTaskNewFirst(newTaskList)
         } else {
-          newResolutionList = sortTaskOldFirst(newResolutionList)
+          newTaskList = sortTaskOldFirst(newTaskList)
         }
-        newResolutionList = filterTasks(newResolutionList, value)
-        setTaskList([...newResolutionList]);
+        newTaskList = filterTasks(newTaskList, value)
+        setTaskList([...newTaskList]);
       }
     } catch (error) {
       alert('Error loading activity data!')
@@ -103,7 +99,7 @@ export const useTask = () => {
       try {
         const { error } = await supabase
           .from('task')
-          .upsert({ name, active: true, user_id: user?.id, description })
+          .upsert({ name, active: true, user_id: session?.user?.id, description })
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -117,7 +113,7 @@ export const useTask = () => {
       try {
         const { error } = await supabase
           .from('task_note')
-          .upsert({ note, task_id: taskId, user_id: user?.id })
+          .upsert({ note, task_id: taskId, user_id: session?.user?.id })
         alert('Updated task!')
         getTaskList()
       } catch (error) {
@@ -133,7 +129,7 @@ export const useTask = () => {
       const { error } = await supabase
         .from('task')
         .update({ name: task.name, description: task.description, active: task.active })
-        .eq('user_id', user?.id)
+        .eq('user_id', session?.user?.id)
         .eq('id', task.id)
       getTaskList()
 
@@ -154,9 +150,56 @@ export const useTask = () => {
     controlValue: value,
     setControlValue,
     updateTask,
+    getTaskList,
   }
 }
 
-export const useTaskControl = () => {
+export const useTaskControl = (taskId: string) => {
+  const supabase = useSupabaseClient()
+  const session = useSession()
+  const [task, setTask] = useState<Task | null>(null)
 
+  const getTask = async () => {
+    try {
+      const { data, error, status } = await supabase
+        .from('task')
+        .select(`id, 
+        name, 
+        active, 
+        inserted_at, 
+        name, 
+        description, 
+        updated_at, 
+        task_note(id, note, inserted_at)`)
+        .eq('user_id', session?.user?.id)
+        .eq('id', taskId)
+        .single()
+        if (error && status !== 406) {
+          throw error
+        }
+        if (data && Array.isArray(data.task_note)) {
+          let resNotes: TaskNote[] | [] = data?.task_note.map(
+            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+          )
+          // map over the task note array and build an array of task notes, then sort by latest completed item
+          resNotes = sortTaskNotesNewFirst(resNotes)
+          const updatedString = resNotes.length ? resNotes[0].inserted_at : data.inserted_at
+          const duration = moment().diff(moment(updatedString), seconds)
+          const noteObject = mapNoteObject(resNotes)
+          setTask({
+            id: data.id,
+            name: data.name,
+            inserted_at: data.inserted_at, 
+            noteObject,
+            lastUpdated: duration,
+            active: data.active,
+            notes: resNotes,
+          })
+        }
+
+    } catch (error) {
+      alert('Error updating the task status!')
+    }
+  }
+  return{getTask, task}
 }

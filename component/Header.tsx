@@ -3,9 +3,7 @@ import React from 'react'
 
 type Props = {}
 
-const Header = (props: Props) => {
-    console.log(props);
-    
+const Header = (props: Props) => {    
   return (
     <VStack spacing={2}>
     <HStack>

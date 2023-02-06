@@ -1,6 +1,7 @@
 import { useSession } from '@supabase/auth-helpers-react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { CardViewControls, Task, useTask } from '../hooks/useTask.hooks';
+import { ToDo, useToDo } from '../hooks/useToDo.hooks';
 
 
 interface GSDContextProps {
@@ -17,6 +18,11 @@ interface GSDContextProps {
   updateTask: (task: Task) => void;
   controlValue: CardViewControls;
   setControlValue: (value: CardViewControls) => void;
+  getTaskList: () => void;
+  addToDo: (name: string, description?: string | undefined, dueDate?: string | undefined) => void,
+  getToDoList: () => void;
+  toDoList: ToDo[];
+
 }
 export const GSDContext = createContext<GSDContextProps>({
   session: null,
@@ -32,6 +38,11 @@ export const GSDContext = createContext<GSDContextProps>({
   newestFist: true,
   taskList: [],
   setControlValue: () => { },
+  getTaskList: () => { },
+  addToDo: () => { },
+  getToDoList: () => { },
+  toDoList: [],
+
 })
 
 
@@ -49,8 +60,9 @@ export const Context = ({ children }) => {
     controlValue,
     setControlValue,
     updateTask,
+    getTaskList,
   } = useTask()
-
+  const {addToDo, getToDoList, toDoList} = useToDo()
   useEffect(() => {
     if (session) {
       setCurrentUser(session.user)
@@ -74,6 +86,10 @@ export const Context = ({ children }) => {
       updateTask,
       controlValue,
       setControlValue,
+      getTaskList,
+      addToDo,
+      getToDoList,
+      toDoList,
     }}>{children}</GSDContext.Provider>
   )
 }

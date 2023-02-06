@@ -1,9 +1,9 @@
 import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea, ButtonGroup, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AddInput } from '../../component/AddInput'
 import { useGSDContext } from '../../context/context'
-import { Task } from '../../hooks/useTask.hooks'
+import { Task, useTaskControl } from '../../hooks/useTask.hooks'
 
 type Props = {}
 const newTask = {
@@ -16,14 +16,23 @@ const newTask = {
 }
 const TaskPage = (props: Props) => {
   const router = useRouter()
-  const { session, user, taskList, addTaskNote, updateTask } = useGSDContext()
+  const { session, user, addTaskNote, updateTask } = useGSDContext()
   const { id } = router.query
+  const {getTask, task} = useTaskControl(id as string)
   const submitNote = (note: string) => addTaskNote(id as string, note)
-  const task = taskList.find((t) => t.id === id)
   const [taskState, setTaskState] = useState<Task>(task || newTask)
   const updateStatelTask = (value: string | boolean, key: string) => {
     setTaskState({ ...taskState, [key]: value })
   }
+  useEffect(() => {
+    if(user && user.id && id) {
+      getTask()
+    } 
+  }, [user, id])
+  useEffect(() => {
+    setTaskState(task)
+  }, [task])
+  
   if (!session) {
     return <Spinner />
   }

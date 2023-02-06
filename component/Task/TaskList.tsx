@@ -14,6 +14,7 @@ export const TaskList = () => {
       paddingTop="4"
       height="70vh" 
       overflow={'scroll'}
+      overflowX="hidden"
     >
       {
         taskList?.map((task) => {
