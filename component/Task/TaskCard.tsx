@@ -12,9 +12,7 @@ type Props = {
 }
 
 export const TaskCard = ({ task }: Props) => {
-  const { addTaskNote, updateTask } = useGSDContext()
 
-  const submitNote = (note: string) => addTaskNote(task.id, note)
   const lastUpdated = () => {
     const duration = moment.duration(task.lastUpdated, seconds)
     if (duration.days() > 0) {
@@ -52,7 +50,6 @@ export const TaskCard = ({ task }: Props) => {
       </CardHeader>
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
-        <Box width={'100%'}><AddInput callBack={submitNote} placeholder={`${task.name} note`} /></Box>
       </CardBody>
     </Card>
   )

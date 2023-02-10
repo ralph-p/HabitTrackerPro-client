@@ -29,7 +29,7 @@ const TaskPage = (props: Props) => {
     if (user && user.id && id) {
       getTask()
     }
-  }, [user, id, getTask])
+  }, [user, id])
   useEffect(() => {
     if (task) setTaskState(task)
   }, [task])
