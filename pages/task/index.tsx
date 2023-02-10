@@ -18,7 +18,7 @@ const TaskPage = (props: Props) => {
     if (user && user?.id) {
       getTaskList()
     }
-  }, [user, controlValue, newestFist])
+  }, [user, controlValue, newestFist, getTaskList])
   return (
     <VStack paddingTop={4}>
       <Breadcrumb fontWeight='medium' fontSize='sm'>

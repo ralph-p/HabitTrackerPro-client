@@ -11,7 +11,7 @@ const ToDo = (props: Props) => {
     if (user && user?.id) {
       getToDoList()
     }
-  }, [user])
+  }, [user, getToDoList])
   return (
     <VStack paddingTop={4}>
       <Button onClick={() => addToDo('test', 'desc', moment().toString())}> Add ToDo</Button>
@@ -28,7 +28,7 @@ const ToDo = (props: Props) => {
         <Text>Under construction</Text>
         {
           toDoList?.map((todo) => {
-            return (<div>{todo.name}</div>)
+            return (<div key={`${todo.name} -`}>{todo.name}</div>)
           })
         }
         <Box />

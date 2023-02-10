@@ -4,7 +4,7 @@ import { useGSDContext } from '../../context/context'
 import { TaskCard } from './TaskCard'
 
 export const TaskList = () => {
-  const { taskList, addTaskNote, updateTask } = useGSDContext()
+  const { taskList } = useGSDContext()
   return (
     <VStack
       align='stretch'
