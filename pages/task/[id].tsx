@@ -37,7 +37,6 @@ const TaskPage = (props: Props) => {
   if (!session) {
     return <Spinner />
   }
-
   return task && (
     <VStack spacing={2}>
       <VStack width={"100%"} spacing={3}>
@@ -73,7 +72,7 @@ const TaskPage = (props: Props) => {
       <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
         <Tbody>
           {
-            Object.entries(task?.noteObject).map((date, index) => {
+            Object.entries(task?.noteObject  as {date: string[]}).map((date, index) => {
               return (
                 <Tr key={`${date[0]} - ${index}`}>
                   <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
