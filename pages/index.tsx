@@ -1,9 +1,6 @@
 import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
-import { Flex, Heading, VStack, Button, HStack, Box } from '@chakra-ui/react'
-import Main from '../component/Main'
-import { useState } from 'react'
-import Account from '../component/Account'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { VStack, Button } from '@chakra-ui/react'
 import { useGSDContext } from '../context/context'
 
 const Home = () => {
