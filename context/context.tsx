@@ -1,5 +1,5 @@
 import { useSession } from '@supabase/auth-helpers-react'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { CardViewControls, Task, useTask } from '../hooks/useTask.hooks';
 import { ToDo, useToDo } from '../hooks/useToDo.hooks';
 
@@ -41,9 +41,11 @@ export const GSDContext = createContext<GSDContextProps>({
 
 })
 
+interface Props {
+  children?: ReactNode
+}
 
-
-export const Context = ({ children }) => {
+export const Context = ({ children }: Props) => {
   const session = useSession()
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState({});
