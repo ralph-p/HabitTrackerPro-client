@@ -36,7 +36,7 @@ export const useTask = () => {
 
 
   const updateSort = () => setSortNewestFirst(!sortNewestFirst)
-
+ 
   const getTaskList = async () => {
     try {
       setLoading(true)
@@ -108,48 +108,17 @@ export const useTask = () => {
       alert('Gotta enter a name to create a task!')
     }
   }
-  const addTaskNote = async (taskId: string, note: string) => {
-    if (taskId && note) {
-      try {
-        const { error } = await supabase
-          .from('task_note')
-          .upsert({ note, task_id: taskId, user_id: session?.user?.id })
-        alert('Updated task!')
-        getTaskList()
-      } catch (error) {
-        alert('Error creating data!')
-      }
-    } else {
-      alert('Enter a task note')
-    }
-  }
-
-  const updateTask = async (task: Task) => {
-    try {
-      const { error } = await supabase
-        .from('task')
-        .update({ name: task.name, description: task.description, active: task.active })
-        .eq('user_id', session?.user?.id)
-        .eq('id', task.id)
-      getTaskList()
-
-    } catch (error) {
-      alert('Error updating the task status!')
-    }
-  }
   const setControlValue = (value: CardViewControls) => {
     setValue(value)
   }
   return {
     taskList,
     addTask,
-    addTaskNote,
     updateSort,
     newestFist: sortNewestFirst,
     loading,
     controlValue: value,
     setControlValue,
-    updateTask,
     getTaskList,
   }
 }
@@ -189,6 +158,7 @@ export const useTaskControl = (taskId: string) => {
           setTask({
             id: data.id,
             name: data.name,
+            description: data.description,
             inserted_at: data.inserted_at, 
             noteObject,
             lastUpdated: duration,
@@ -201,5 +171,32 @@ export const useTaskControl = (taskId: string) => {
       alert('Error updating the task status!')
     }
   }
-  return{getTask, task}
+  const addTaskNote = async (taskId: string, note: string) => {
+    if (taskId && note) {
+      try {
+        const { error } = await supabase
+          .from('task_note')
+          .upsert({ note, task_id: taskId, user_id: session?.user?.id })
+          getTask();
+      } catch (error) {
+        alert('Error adding note data!')
+      }
+    } else {
+      alert('Enter a task note')
+    }
+  }
+  const updateTask = async (task: Task) => {
+    try {
+      const { error } = await supabase
+        .from('task')
+        .update({ name: task.name, description: task.description, active: task.active })
+        .eq('user_id', session?.user?.id)
+        .eq('id', task.id)
+        getTask()
+        alert(`Updated ${task.name}!`)
+    } catch (error) {
+      alert('Error updating the task status!')
+    }
+  }
+  return{getTask, task, addTaskNote, updateTask}
 }

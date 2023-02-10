@@ -14,8 +14,6 @@ interface GSDContextProps {
   taskList: Task[] | [],
   newestFist: boolean,
   updateSort: () => void,
-  addTaskNote: (taskId: string, note: string) => void;
-  updateTask: (task: Task) => void;
   controlValue: CardViewControls;
   setControlValue: (value: CardViewControls) => void;
   getTaskList: () => void;
@@ -32,8 +30,6 @@ export const GSDContext = createContext<GSDContextProps>({
   setLoading: () => { },
   addTask: () => { },
   updateSort: () => { },
-  addTaskNote: () => { },
-  updateTask: () => { },
   controlValue: CardViewControls.ACTIVE,
   newestFist: true,
   taskList: [],
@@ -54,12 +50,10 @@ export const Context = ({ children }) => {
   const {
     taskList,
     addTask,
-    addTaskNote,
     updateSort,
     newestFist,
     controlValue,
     setControlValue,
-    updateTask,
     getTaskList,
   } = useTask()
   const {addToDo, getToDoList, toDoList} = useToDo()
@@ -82,8 +76,6 @@ export const Context = ({ children }) => {
       taskList,
       updateSort,
       newestFist,
-      addTaskNote,
-      updateTask,
       controlValue,
       setControlValue,
       getTaskList,

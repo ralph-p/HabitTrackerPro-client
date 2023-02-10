@@ -1,4 +1,4 @@
-import { Box, Button, StackDivider, VStack } from '@chakra-ui/react'
+import { Box, Button, StackDivider, Text, VStack } from '@chakra-ui/react'
 import moment from 'moment'
 import React, { useEffect } from 'react'
 import { useGSDContext } from '../../context/context'
@@ -25,6 +25,7 @@ const ToDo = (props: Props) => {
         overflow={'scroll'}
         overflowX="hidden"
       >
+        <Text>Under construction</Text>
         {
           toDoList?.map((todo) => {
             return (<div>{todo.name}</div>)
