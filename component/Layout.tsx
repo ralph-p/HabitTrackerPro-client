@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Flex, VStack } from '@chakra-ui/react'
 import Header from './Header'
 import Meta from './Meta'
 
-const Layout = ({ children }) => {
+interface Props {
+  children?: ReactNode
+}
+const Layout = ({ children }: Props) => {
   return (
     <>
     <Meta />
