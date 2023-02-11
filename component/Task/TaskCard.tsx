@@ -1,21 +1,18 @@
-import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton } from '@chakra-ui/react'
-import React from 'react'
-import { Task } from '../hooks/useTask.hooks';
+import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton, Box } from '@chakra-ui/react'
+import React, { useContext } from 'react'
+import { Task } from '../../hooks/useTask.hooks';
 import moment from "moment"
-import { AddInput } from './AddInput';
-import { getCardTheme, seconds } from '../utils/task.utils';
-import { HamburgerIcon } from '@chakra-ui/icons';
-import { TaskModal } from './TaskModal';
+import { AddInput } from '../AddInput';
+import { getCardTheme, seconds } from '../../utils/task.utils';
+import { SettingsIcon } from '@chakra-ui/icons';
+import { TaskModal } from '../TaskModal';
+import { useGSDContext } from '../../context/context';
 type Props = {
   task: Task;
-  addNote: (taskId: string, note: string) => void;
-  updateTask: (task: Task) => void
 }
 
-export const TaskCard = ({ task, addNote, updateTask }: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+export const TaskCard = ({ task }: Props) => {
 
-  const submitNote = (note: string) => addNote(task.id, note)
   const lastUpdated = () => {
     const duration = moment.duration(task.lastUpdated, seconds)
     if (duration.days() > 0) {
@@ -28,6 +25,7 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
   }
   const { cardColor } = getCardTheme(task.lastUpdated)
 
+
   return (
     <Card key={`${task.name}-`} backgroundColor={cardColor} width="100%">
       <CardHeader paddingBottom={'1'}>
@@ -39,21 +37,20 @@ export const TaskCard = ({ task, addNote, updateTask }: Props) => {
             <IconButton
               aria-label={'open-task-modal'}
               size='sm'
-              icon={<HamburgerIcon />}
+              icon={<SettingsIcon />}
               variant='ghost'
               colorScheme='teal'
               border='0px'
-              onClick={onOpen}
+              // onClick={onOpen}
+              as="a"
+              href={`/task/${task.id}`}
             />
           </Text>
         </HStack>
       </CardHeader>
       <CardBody>
         <Text color="gray.900">{lastUpdated()}</Text>
-        <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
       </CardBody>
-      <TaskModal isOpen={isOpen} onClose={onClose} task={task} updateTask={updateTask} />
-
     </Card>
   )
 }

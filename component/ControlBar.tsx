@@ -1,12 +1,11 @@
 import { Radio, RadioGroup, Stack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { useGSDContext } from '../context/context';
 import { CardViewControls } from '../hooks/useTask.hooks'
-type Props = {
-  value: CardViewControls;
-  setValue: (value: CardViewControls) => void
-}
 
-export const ControlBar = ({ value, setValue }: Props) => {
+export const ControlBar = () => {
+  const { controlValue: value, setControlValue: setValue } = useGSDContext()
+
   // const [value, setValue] = useState<CardViewControls>(CardViewControls.ACTIVE)
   return (
     <RadioGroup onChange={(value: CardViewControls) => setValue(value)} value={value}>

@@ -19,7 +19,9 @@ export const mapNoteObject = (taskNotes: TaskNote[]) => {
   })
   return notes
 }
+export const mapSubTasks = () => {
 
+}
 export const sortTaskNotesNewFirst = (taskNotes: TaskNote[]) => {
 
 

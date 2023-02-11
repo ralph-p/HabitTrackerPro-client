@@ -5,7 +5,7 @@ body {
   --custom-bg-color: #101010;
   --custom-panel-color: #222;
   --custom-box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.8);
-  --custom-color: #fff;
+  --custom-color: rgb(43, 43, 43);
   --custom-color-brand: #24b47e;
   --custom-color-secondary: #666;
   --custom-border: 1px solid #333;
