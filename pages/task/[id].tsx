@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { AddInput } from '../../component/AddInput'
 import { useGSDContext } from '../../context/context'
 import { Task, useTaskControl } from '../../hooks/useTask.hooks'
+import { lastUpdated } from '../../utils/task.utils'
 
 type Props = {}
 const newTask = {
@@ -67,6 +68,7 @@ const TaskPage = (props: Props) => {
           size='sm'
         />
         <Text>Duration: {taskState.duration}</Text>
+        <Text>{lastUpdated(taskState.lastUpdated)}</Text>
         <HStack>
           <Text color={'blackAlpha.500'} fontWeight='bold'>Active</Text>
           <Switch isChecked={taskState?.active} onChange={() => updateStateTask(!taskState?.active, 'active')} />

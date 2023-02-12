@@ -61,3 +61,14 @@ export const getCardTheme = (lastUpdated?: number) => {
   }
   return { switchColor: 'red', cardColor: 'red.200' }
 }
+
+export const lastUpdated = (lastUpdated: number) => {
+  const duration = moment.duration(lastUpdated, seconds)
+  if (duration.days() > 0) {
+    return `Updated: ${duration.days()}d ${duration.hours()}h ago`
+  }
+  if (duration.hours() > 0) {
+    return `Updated: ${duration.hours()}h ${duration.minutes()}m ago`
+  }
+  return `Updated: ${duration.minutes()}m ago`
+}
