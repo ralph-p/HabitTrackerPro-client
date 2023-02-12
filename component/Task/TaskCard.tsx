@@ -2,11 +2,8 @@ import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconB
 import React, { useContext } from 'react'
 import { Task } from '../../hooks/useTask.hooks';
 import moment from "moment"
-import { AddInput } from '../AddInput';
 import { getCardTheme, seconds } from '../../utils/task.utils';
 import { SettingsIcon } from '@chakra-ui/icons';
-import { TaskModal } from '../TaskModal';
-import { useGSDContext } from '../../context/context';
 type Props = {
   task: Task;
 }

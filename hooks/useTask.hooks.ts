@@ -7,6 +7,7 @@ export type Task = {
   name: string;
   active: boolean;
   description?: string;
+  duration?: number;
   inserted_at: string;
   lastUpdated: number;
   notes?: TaskNote[];
@@ -20,6 +21,7 @@ export type TaskNote = {
   id: string;
   note: string;
   inserted_at: string;
+  time?: number;
 }
 export enum CardViewControls {
   ACTIVE = 'active',
@@ -139,7 +141,8 @@ export const useTaskControl = (taskId: string) => {
         name, 
         description, 
         updated_at, 
-        task_note(id, note, inserted_at)`)
+        duration,
+        task_note(id, note, inserted_at, time)`)
         .eq('user_id', session?.user?.id)
         .eq('id', taskId)
         .single()
@@ -148,7 +151,7 @@ export const useTaskControl = (taskId: string) => {
         }
         if (data && Array.isArray(data.task_note)) {
           let resNotes: TaskNote[] | [] = data?.task_note.map(
-            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
           )
           // map over the task note array and build an array of task notes, then sort by latest completed item
           resNotes = sortTaskNotesNewFirst(resNotes)
@@ -163,6 +166,7 @@ export const useTaskControl = (taskId: string) => {
             noteObject,
             lastUpdated: duration,
             active: data.active,
+            duration: data.duration,
             notes: resNotes,
           })
         }
@@ -171,12 +175,12 @@ export const useTaskControl = (taskId: string) => {
       alert('Error updating the task status!')
     }
   }
-  const addTaskNote = async (taskId: string, note: string) => {
+  const addTaskNote = async (taskId: string, note: string, time?: string) => {
     if (taskId && note) {
       try {
         const { error } = await supabase
           .from('task_note')
-          .upsert({ note, task_id: taskId, user_id: session?.user?.id })
+          .upsert({ note, task_id: taskId, user_id: session?.user?.id, time: time ? parseInt(time) : 0 })
           getTask();
       } catch (error) {
         alert('Error adding note data!')

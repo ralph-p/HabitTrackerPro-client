@@ -76,18 +76,12 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
               onChange={(event) => updateModalTask(event?.target?.value, 'name')}
             />
             <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Description</FormLabel>
-
             <Textarea
               value={modalTask?.description}
               onChange={(event) => updateModalTask(event?.target?.value, 'description')}
               placeholder='Enter some details about this task...'
               size='sm'
             />
-            {updateTask && (
-              <HStack spacing={1}>
-                <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Active</FormLabel>
-                <Switch colorScheme={switchColor} isChecked={modalTask?.active} onChange={() => updateModalTask(!modalTask?.active, 'active')} />
-              </HStack>)}
           </FormControl>
         </ModalHeader>
         <ModalBody>

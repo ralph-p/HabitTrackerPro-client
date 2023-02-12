@@ -8,13 +8,13 @@ export const formatDate = (dateString: string) => {
 }
 
 export const mapNoteObject = (taskNotes: TaskNote[]) => {
-  const notes: NoteObject = {}
+  const notes: NoteObject = {}  
   taskNotes.forEach((note) => {
     const noteDate = formatDate(note.inserted_at)
     if (notes[noteDate]) {
-      notes[noteDate].push(note.note)
+      notes[noteDate].push(`${note.note} for ${note.time || 0} minutes`)
     } else {
-      notes[noteDate] = [note.note]
+      notes[noteDate] = [`${note.note} for ${note.time || 0} minutes`]
     }
   })
   return notes
