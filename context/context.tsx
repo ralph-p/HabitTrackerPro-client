@@ -1,6 +1,7 @@
 import { useSession } from '@supabase/auth-helpers-react'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { CardViewControls, Task, useTask } from '../hooks/useTask.hooks';
+import { CardViewControls, FrequencyEnum, Task } from '../hooks/types/task';
+import { useTask } from '../hooks/useTask.hooks';
 import { ToDo, useToDo } from '../hooks/useToDo.hooks';
 
 
@@ -10,7 +11,7 @@ interface GSDContextProps {
   loading: boolean;
   setUser: (user: any) => void;
   setLoading: (loading: boolean) => void;
-  addTask: (name: string, description?: string | undefined) => void;
+  addTask: (name: string, description?: string, duration?: number, frequency?: FrequencyEnum) => void;
   taskList: Task[] | [],
   newestFist: boolean,
   updateSort: () => void,

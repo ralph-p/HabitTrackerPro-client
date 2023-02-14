@@ -1,7 +1,7 @@
 import { Radio, RadioGroup, Stack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useGSDContext } from '../context/context';
-import { CardViewControls } from '../hooks/useTask.hooks'
+import { CardViewControls } from '../hooks/types/task';
 
 export const ControlBar = () => {
   const { controlValue: value, setControlValue: setValue } = useGSDContext()

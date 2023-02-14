@@ -2,30 +2,8 @@ import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-r
 import moment from 'moment';
 import { useEffect, useState } from 'react'
 import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
-export type Task = {
-  id: string;
-  name: string;
-  active: boolean;
-  description?: string;
-  inserted_at: string;
-  lastUpdated: number;
-  notes?: TaskNote[];
-  noteObject?: NoteObject;
-}
+import { CardViewControls, FrequencyEnum, Task, TaskNote } from './types/task';
 
-export type NoteObject = {
-  [date: string]: string[];
-}
-export type TaskNote = {
-  id: string;
-  note: string;
-  inserted_at: string;
-}
-export enum CardViewControls {
-  ACTIVE = 'active',
-  ARCHIVED = 'archived',
-  ALL = 'all'
-}
 export const useTask = () => {
   const supabase = useSupabaseClient()
   const session = useSession()
@@ -49,6 +27,8 @@ export const useTask = () => {
           name, 
           description, 
           updated_at, 
+          frequency,
+          duration,
           task_note(id, note, inserted_at)
         `)
         .eq('user_id', session?.user?.id)
@@ -65,7 +45,7 @@ export const useTask = () => {
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : task.inserted_at
-            const duration = moment().diff(moment(updatedString), seconds)
+            const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: task.id,
@@ -75,7 +55,9 @@ export const useTask = () => {
               notes: resNotes,
               description: task.description,
               noteObject,
-              lastUpdated: duration,
+              lastUpdated: lastUpdatedDuration,
+              duration: task.duration,
+              frequency: task.frequency,
             }
             newTaskList.push(newRes)
           }
@@ -94,12 +76,12 @@ export const useTask = () => {
     setLoading(false)
   }
 
-  const addTask = async (name: string, description?: string) => {
+  const addTask = async (name: string, description?: string, duration?: number, frequency?: FrequencyEnum) => {
     if (name) {
       try {
         const { error } = await supabase
           .from('task')
-          .upsert({ name, active: true, user_id: session?.user?.id, description })
+          .upsert({ name, active: true, user_id: session?.user?.id, description, duration, frequency })
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -139,7 +121,9 @@ export const useTaskControl = (taskId: string) => {
         name, 
         description, 
         updated_at, 
-        task_note(id, note, inserted_at)`)
+        duration,
+        frequency,
+        task_note(id, note, inserted_at, time)`)
         .eq('user_id', session?.user?.id)
         .eq('id', taskId)
         .single()
@@ -148,7 +132,7 @@ export const useTaskControl = (taskId: string) => {
         }
         if (data && Array.isArray(data.task_note)) {
           let resNotes: TaskNote[] | [] = data?.task_note.map(
-            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
           )
           // map over the task note array and build an array of task notes, then sort by latest completed item
           resNotes = sortTaskNotesNewFirst(resNotes)
@@ -163,6 +147,8 @@ export const useTaskControl = (taskId: string) => {
             noteObject,
             lastUpdated: duration,
             active: data.active,
+            duration: data.duration,
+            frequency: data.frequency,
             notes: resNotes,
           })
         }
@@ -171,12 +157,12 @@ export const useTaskControl = (taskId: string) => {
       alert('Error updating the task status!')
     }
   }
-  const addTaskNote = async (taskId: string, note: string) => {
+  const addTaskNote = async (taskId: string, note: string, time?: string) => {
     if (taskId && note) {
       try {
         const { error } = await supabase
           .from('task_note')
-          .upsert({ note, task_id: taskId, user_id: session?.user?.id })
+          .upsert({ note, task_id: taskId, user_id: session?.user?.id, time: time ? parseInt(time) : 0 })
           getTask();
       } catch (error) {
         alert('Error adding note data!')

@@ -7,9 +7,7 @@ import { TaskModal } from '../../component/TaskModal'
 import { ControlBar } from '../../component/ControlBar'
 import { TaskList } from '../../component/Task/TaskList'
 
-type Props = {}
-
-const TaskPage = (props: Props) => {
+const TaskPage = () => {
   const { addTask, loading, newestFist, updateSort, user, getTaskList, controlValue } = useGSDContext()
 
   const submitNewTask = (task: string, description?: string) => addTask(task, description)

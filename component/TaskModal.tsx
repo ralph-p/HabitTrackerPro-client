@@ -1,6 +1,6 @@
 import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Textarea, FormControl, FormLabel, } from '@chakra-ui/react';
 import React, { useState } from 'react'
-import { Task } from '../hooks/useTask.hooks';
+import { Task } from '../hooks/types/task';
 import { getCardTheme } from '../utils/task.utils';
 
 type Props = {
@@ -41,6 +41,7 @@ const newTask = {
   id: '',
   name: '',
   description: '',
+  frequency: 0,
   inserted_at: '',
   lastUpdated: 0,
   active: true,
@@ -76,18 +77,12 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
               onChange={(event) => updateModalTask(event?.target?.value, 'name')}
             />
             <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Description</FormLabel>
-
             <Textarea
               value={modalTask?.description}
               onChange={(event) => updateModalTask(event?.target?.value, 'description')}
               placeholder='Enter some details about this task...'
               size='sm'
             />
-            {updateTask && (
-              <HStack spacing={1}>
-                <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Active</FormLabel>
-                <Switch colorScheme={switchColor} isChecked={modalTask?.active} onChange={() => updateModalTask(!modalTask?.active, 'active')} />
-              </HStack>)}
           </FormControl>
         </ModalHeader>
         <ModalBody>

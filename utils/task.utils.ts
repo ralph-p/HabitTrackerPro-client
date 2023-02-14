@@ -1,5 +1,5 @@
 import moment from "moment";
-import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/useTask.hooks";
+import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
 export const seconds = 'seconds';
@@ -8,13 +8,13 @@ export const formatDate = (dateString: string) => {
 }
 
 export const mapNoteObject = (taskNotes: TaskNote[]) => {
-  const notes: NoteObject = {}
+  const notes: NoteObject = {}  
   taskNotes.forEach((note) => {
     const noteDate = formatDate(note.inserted_at)
     if (notes[noteDate]) {
-      notes[noteDate].push(note.note)
+      notes[noteDate].push(`${note.note} for ${note.time || 0} minutes`)
     } else {
-      notes[noteDate] = [note.note]
+      notes[noteDate] = [`${note.note} for ${note.time || 0} minutes`]
     }
   })
   return notes
@@ -60,4 +60,15 @@ export const getCardTheme = (lastUpdated?: number) => {
 
   }
   return { switchColor: 'red', cardColor: 'red.200' }
+}
+
+export const lastUpdated = (lastUpdated: number) => {
+  const duration = moment.duration(lastUpdated, seconds)
+  if (duration.days() > 0) {
+    return `Updated: ${duration.days()}d ${duration.hours()}h ago`
+  }
+  if (duration.hours() > 0) {
+    return `Updated: ${duration.hours()}h ${duration.minutes()}m ago`
+  }
+  return `Updated: ${duration.minutes()}m ago`
 }
