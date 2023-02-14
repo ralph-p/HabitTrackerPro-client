@@ -2,32 +2,8 @@ import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-r
 import moment from 'moment';
 import { useEffect, useState } from 'react'
 import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
-export type Task = {
-  id: string;
-  name: string;
-  active: boolean;
-  description?: string;
-  duration?: number;
-  inserted_at: string;
-  lastUpdated: number;
-  notes?: TaskNote[];
-  noteObject?: NoteObject;
-}
+import { CardViewControls, FrequencyEnum, Task, TaskNote } from './types/task';
 
-export type NoteObject = {
-  [date: string]: string[];
-}
-export type TaskNote = {
-  id: string;
-  note: string;
-  inserted_at: string;
-  time?: number;
-}
-export enum CardViewControls {
-  ACTIVE = 'active',
-  ARCHIVED = 'archived',
-  ALL = 'all'
-}
 export const useTask = () => {
   const supabase = useSupabaseClient()
   const session = useSession()
@@ -51,6 +27,8 @@ export const useTask = () => {
           name, 
           description, 
           updated_at, 
+          frequency,
+          duration,
           task_note(id, note, inserted_at)
         `)
         .eq('user_id', session?.user?.id)
@@ -67,7 +45,7 @@ export const useTask = () => {
             // map over the task note array and build an array of task notes, then sort by latest completed item
             resNotes = sortTaskNotesNewFirst(resNotes)
             const updatedString = resNotes.length ? resNotes[0].inserted_at : task.inserted_at
-            const duration = moment().diff(moment(updatedString), seconds)
+            const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
             const noteObject = mapNoteObject(resNotes)
             const newRes: Task = {
               id: task.id,
@@ -77,7 +55,9 @@ export const useTask = () => {
               notes: resNotes,
               description: task.description,
               noteObject,
-              lastUpdated: duration,
+              lastUpdated: lastUpdatedDuration,
+              duration: task.duration,
+              frequency: task.frequency,
             }
             newTaskList.push(newRes)
           }
@@ -96,12 +76,12 @@ export const useTask = () => {
     setLoading(false)
   }
 
-  const addTask = async (name: string, description?: string) => {
+  const addTask = async (name: string, description?: string, duration?: number, frequency?: FrequencyEnum) => {
     if (name) {
       try {
         const { error } = await supabase
           .from('task')
-          .upsert({ name, active: true, user_id: session?.user?.id, description })
+          .upsert({ name, active: true, user_id: session?.user?.id, description, duration, frequency })
         getTaskList()
       } catch (error) {
         alert('Error creating data!')
@@ -142,6 +122,7 @@ export const useTaskControl = (taskId: string) => {
         description, 
         updated_at, 
         duration,
+        frequency,
         task_note(id, note, inserted_at, time)`)
         .eq('user_id', session?.user?.id)
         .eq('id', taskId)
@@ -167,6 +148,7 @@ export const useTaskControl = (taskId: string) => {
             lastUpdated: duration,
             active: data.active,
             duration: data.duration,
+            frequency: data.frequency,
             notes: resNotes,
           })
         }

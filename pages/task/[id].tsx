@@ -2,11 +2,12 @@ import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AddInput } from '../../component/AddInput'
+import { TaskDetails } from '../../component/Task/TaskDetails'
 import { useGSDContext } from '../../context/context'
-import { Task, useTaskControl } from '../../hooks/useTask.hooks'
+import { Frequency, Task } from '../../hooks/types/task'
+import { useTaskControl } from '../../hooks/useTask.hooks'
 import { lastUpdated } from '../../utils/task.utils'
 
-type Props = {}
 const newTask = {
   id: '',
   name: '',
@@ -14,8 +15,9 @@ const newTask = {
   inserted_at: '',
   lastUpdated: 0,
   active: true,
+  frequency: 0,
 }
-const TaskPage = (props: Props) => {
+const TaskPage = () => {
   const router = useRouter()
   const { session, user } = useGSDContext()
   const { id } = router.query
@@ -40,7 +42,6 @@ const TaskPage = (props: Props) => {
   }
   return task && (
     <VStack spacing={2}>
-      <VStack width={"100%"} spacing={3}>
         <Breadcrumb fontWeight='medium' fontSize='sm'>
           <BreadcrumbItem>
             <BreadcrumbLink href='/'>Home</BreadcrumbLink>
@@ -52,28 +53,8 @@ const TaskPage = (props: Props) => {
             <BreadcrumbLink>{task.name}</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
-        <Textarea
-          value={taskState?.name}
-          onChange={(event) => updateStateTask(event?.target?.value, 'name')}
-          color="blackAlpha.700"
-          borderColor={'facebook.900'}
-        />
-
-        <Textarea
-          value={taskState?.description}
-          onChange={(event) => updateStateTask(event?.target?.value, 'description')}
-          placeholder='Enter some details about this task...'
-          color="blackAlpha.700"
-          borderColor={'facebook.900'}
-          size='sm'
-        />
-        <Text>Duration: {taskState.duration}</Text>
-        <Text>{lastUpdated(taskState.lastUpdated)}</Text>
-        <HStack>
-          <Text color={'blackAlpha.500'} fontWeight='bold'>Active</Text>
-          <Switch isChecked={taskState?.active} onChange={() => updateStateTask(!taskState?.active, 'active')} />
-
-        </HStack>
+      <VStack width={"100%"} spacing={3}>
+        <TaskDetails task={taskState} readOnly={true} updateTask={updateStateTask}/>
         <ButtonGroup><Button>Edit</Button><Button onClick={() => updateTask({ ...taskState })}>Save</Button></ButtonGroup>
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
       </VStack>

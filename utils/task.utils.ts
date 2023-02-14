@@ -1,5 +1,5 @@
 import moment from "moment";
-import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/useTask.hooks";
+import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
 export const seconds = 'seconds';
