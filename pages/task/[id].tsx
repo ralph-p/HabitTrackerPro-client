@@ -44,6 +44,9 @@ const TaskPage = () => {
     if (task) setTaskState(task)
     setReadOnly((prevState) => !prevState)
   }
+  const saveTask = () => {
+    updateTask({ ...taskState }).then(() => setReadOnly(true))
+  }
   if (!session) {
     return <Spinner />
   }
@@ -65,7 +68,7 @@ const TaskPage = () => {
         {readOnly ? <Button onClick={editOnClick} colorScheme="facebook">Edit</Button> : (
           <ButtonGroup>
             <Button onClick={resetState} colorScheme='red'>Cancel</Button>
-            <Button onClick={() => updateTask({ ...taskState })}  colorScheme='whatsapp'>Save</Button>
+            <Button onClick={saveTask} colorScheme='whatsapp'>Save</Button>
           </ButtonGroup>
         )}
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />

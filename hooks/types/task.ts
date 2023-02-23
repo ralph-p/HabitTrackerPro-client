@@ -9,6 +9,7 @@ export type Task = {
     lastUpdated: number;
     notes?: TaskNote[];
     noteObject?: NoteObject;
+    percentComplete?: number;
   }
   
   export type NoteObject = {

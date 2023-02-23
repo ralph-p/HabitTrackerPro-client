@@ -1,23 +1,24 @@
 import { useUser, useSupabaseClient, Session } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
-type UserAccount = {
-  email: string;
-  username: string;
-  website: string;
-}
-export const useProfile = ({ session }: { session: Session | null }) => {
+import { UserAccount } from './types/user'
+
+export const useProfile = (session: { session: Session | null }) => {
   const supabase = useSupabaseClient()
   const user = useUser()
+  const [account, setAccount] = useState<UserAccount>({})
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState(null)
-  const [website, setWebsite] = useState(null)
-  const [avatar_url, setAvatarUrl] = useState(null)
   useEffect(() => {
-    getProfile()
+    if (session) {
+      setLoading(true)
+      getProfile().then(() =>
+        setLoading(false))
+    }
   }, [session])
+  const signOut = () => {
+    supabase.auth.signOut().then(() => console.log('signed out'))
+  }
   const getProfile = async () => {
     try {
-      setLoading(true)
       if (!user) throw new Error('No user')
 
       let { data, error, status } = await supabase
@@ -30,16 +31,18 @@ export const useProfile = ({ session }: { session: Session | null }) => {
         throw error
       }
 
-      if (data) {
-        setUsername(data.username)
-        setWebsite(data.website)
-        setAvatarUrl(data.avatar_url)
+      if (data && user) {
+        const currentUser: UserAccount = {
+          email: user.email,
+          username: data?.username,
+          website: data?.website,
+          avatarURL: data?.avatar_url,
+        }
+        setAccount(currentUser)
       }
     } catch (error) {
       alert('Error loading user data!')
       console.log(error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -74,5 +77,5 @@ export const useProfile = ({ session }: { session: Session | null }) => {
       setLoading(false)
     }
   }
-  return { getProfile, updateProfile }
+  return { account, getProfile, updateProfile, loading, signOut }
 }

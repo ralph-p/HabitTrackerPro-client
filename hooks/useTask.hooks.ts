@@ -175,7 +175,7 @@ export const useTaskControl = (taskId: string) => {
     try {
       const { error } = await supabase
         .from('task')
-        .update({ name: task.name, description: task.description, active: task.active })
+        .update({ name: task.name, description: task.description, active: task.active, duration: task.duration })
         .eq('user_id', session?.user?.id)
         .eq('id', task.id)
         getTask()
