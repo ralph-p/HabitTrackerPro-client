@@ -9,7 +9,7 @@ type Props = {
 }
 export const AddInput = ({ callBack, placeholder }: Props) => {
   const [inputValue, setInputValue] = useState<string>('')
-  const [numberValue, setNumberValue] = useState<string | undefined>('')
+  const [numberValue, setNumberValue] = useState<string | number>(0)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event?.target?.value
@@ -24,11 +24,12 @@ export const AddInput = ({ callBack, placeholder }: Props) => {
     if (e.key === 'Enter') {
       addButtonOnClick()
     }
+    
   }
   const addButtonOnClick = () => {
-    setInputValue('')
-    setNumberValue(undefined)
-    callBack(inputValue, numberValue)
+    setInputValue('');
+    setNumberValue(0);
+    callBack(inputValue, numberValue as string)
   }
   return (
     <InputGroup size='sm' width="xs" >
@@ -42,6 +43,12 @@ export const AddInput = ({ callBack, placeholder }: Props) => {
         color={'blackAlpha.900'}
         backgroundColor="whiteAlpha.700"
       />
+      {/* <Input
+        onChange={handleTimeChange}
+        value={numberValue}
+        type='number'
+        onKeyDown={submitOnEnter}
+      /> */}
       <NumberInput>
         <NumberInputField
           placeholder='min'
@@ -50,9 +57,12 @@ export const AddInput = ({ callBack, placeholder }: Props) => {
           onKeyDown={submitOnEnter}
           onChange={handleTimeChange}
           value={numberValue}
+          min={0}
+          defaultValue={0}
+          id='duration'
         />
       </NumberInput>
-      <InputRightElement width='4.5rem'>
+      <InputRightElement width='3.5rem'>
         <AddIcon boxSize={4} onClick={addButtonOnClick} cursor="pointer" color={'teal'} />
       </InputRightElement>
     </InputGroup>)

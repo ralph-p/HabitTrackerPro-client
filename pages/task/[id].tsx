@@ -25,6 +25,7 @@ const TaskPage = () => {
   const { getTask, task, addTaskNote, updateTask } = useTaskControl(taskId)
   const submitNote = (note: string, time?: string) => addTaskNote(taskId, note, time)
   const [taskState, setTaskState] = useState<Task>(newTask)
+  const [readOnly, setReadOnly] = useState(true)
   const updateStateTask = (value: string | boolean, key: string) => {
     setTaskState((currentTaskState) => ({ ...currentTaskState, [key]: value }))
   }
@@ -36,26 +37,37 @@ const TaskPage = () => {
   useEffect(() => {
     if (task) setTaskState(task)
   }, [task])
-
+  const editOnClick = () => {
+    setReadOnly((prevState) => !prevState)
+  }
+  const resetState = () => {
+    if (task) setTaskState(task)
+    setReadOnly((prevState) => !prevState)
+  }
   if (!session) {
     return <Spinner />
   }
   return task && (
     <VStack spacing={2}>
-        <Breadcrumb fontWeight='medium' fontSize='sm'>
-          <BreadcrumbItem>
-            <BreadcrumbLink href='/'>Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink href='/task'>Task List</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem>
-            <BreadcrumbLink>{task.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+      <Breadcrumb fontWeight='medium' fontSize='sm'>
+        <BreadcrumbItem>
+          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink href='/task'>Task List</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink>{task.name}</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <VStack width={"100%"} spacing={3}>
-        <TaskDetails task={taskState} readOnly={true} updateTask={updateStateTask}/>
-        <ButtonGroup><Button>Edit</Button><Button onClick={() => updateTask({ ...taskState })}>Save</Button></ButtonGroup>
+        <TaskDetails task={taskState} readOnly={readOnly} updateTask={updateStateTask} />
+        {readOnly ? <Button onClick={editOnClick} colorScheme="facebook">Edit</Button> : (
+          <ButtonGroup>
+            <Button onClick={resetState} colorScheme='red'>Cancel</Button>
+            <Button onClick={() => updateTask({ ...taskState })}  colorScheme='whatsapp'>Save</Button>
+          </ButtonGroup>
+        )}
         <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
       </VStack>
       <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">

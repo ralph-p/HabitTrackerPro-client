@@ -1,75 +1,44 @@
-import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Textarea, FormControl, FormLabel, } from '@chakra-ui/react';
+import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Switch, Table, Tbody, Td, Tr, Text, Input, Textarea, FormControl, FormLabel, NumberInput, NumberInputField, Select, } from '@chakra-ui/react';
 import React, { useState } from 'react'
-import { Task } from '../hooks/types/task';
+import { FrequencyEnum, Task } from '../hooks/types/task';
 import { getCardTheme } from '../utils/task.utils';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void
-  task?: Task;
-  updateTask?: (task: Task) => void
-  submitNewTask?: (name: string, description?: string) => void
+  submitNewTask?: (name: string, description?: string, duration?: number, frequency?: FrequencyEnum) => void
 }
-const getNoteTable = (task?: Task) => {
-  if (task?.noteObject) {
-    return (
-      <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
-        <Tbody>
-          {
-            Object.entries(task.noteObject).map((date, index) => {
-              return (
-                <Tr key={`${date[0]} - ${index}`}>
-                  <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
-                  <Td>
-                    {date[1].map((note, index) => (
-                      <Tr key={`${date[0]} - ${note} - ${index}`}>
-                        <Text color={'blackAlpha.600'}>{note}</Text>
-                      </Tr>
-                    ))}
-                  </Td>
-                </Tr>
-              );
-            })
 
-          }
-        </Tbody>
-      </Table>
-    )
-  }
-}
 const newTask = {
   id: '',
   name: '',
   description: '',
-  frequency: 0,
+  frequency: FrequencyEnum.DAILY,
   inserted_at: '',
   lastUpdated: 0,
   active: true,
+  duration: 0,
 }
-export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: Props) => {
-  const [modalTask, setModalTask] = useState<Task>(task || newTask)
-  const { cardColor, switchColor } = getCardTheme(modalTask?.lastUpdated)
+export const TaskModal = ({ isOpen, onClose, submitNewTask }: Props) => {
+  const [modalTask, setModalTask] = useState<Task>(newTask)
 
   const updateModalTask = (value: string | boolean, key: string) => {
     setModalTask({ ...modalTask, [key]: value })
   }
-  const saveAndCloseModal = () => {
-    if (updateTask) {
-      updateTask({ ...modalTask })
-      onClose();
-    }
-  }
   const createNewTask = () => {
     if (modalTask.name && submitNewTask) {
-      submitNewTask(modalTask.name, modalTask.description)
+      submitNewTask(modalTask.name, modalTask.description, modalTask?.duration, modalTask.frequency)
+      setModalTask(newTask)
       onClose()
     }
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered >
       <ModalOverlay />
-      <ModalContent backgroundColor={cardColor} margin="1em">
+      <ModalContent margin="1em">
         <ModalHeader>
+        </ModalHeader>
+        <ModalBody>
           <FormControl>
             <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Name</FormLabel>
             <Input
@@ -83,21 +52,33 @@ export const TaskModal = ({ isOpen, onClose, task, updateTask, submitNewTask }: 
               placeholder='Enter some details about this task...'
               size='sm'
             />
+            <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Time Commitment</FormLabel>
+            <NumberInput>
+              <NumberInputField
+                placeholder='min'
+                color={'blackAlpha.900'}
+                backgroundColor="whiteAlpha.600"
+                value={modalTask?.duration}
+                onChange={(event) => updateModalTask(event?.target?.value, 'duration')}
+                min={0}
+                defaultValue={0}
+                id='duration'
+              />
+            </NumberInput>
+            <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Frequency</FormLabel>
+            <Select placeholder='Select...(default daily)' onChange={({target: {value}}) => updateModalTask(value, 'frequency')}>
+              <option value={0}>Daily</option>
+              <option value={1}>Weekly</option>
+              <option value={2}>Monthly</option>
+            </Select>
           </FormControl>
-        </ModalHeader>
-        <ModalBody>
-          <HStack>
-            {modalTask?.description}
-            {getNoteTable(modalTask)}
-
-          </HStack>
 
         </ModalBody>
         <ModalFooter>
           <Button colorScheme='blue' mr={3} onClick={onClose}>
             Close
           </Button>
-          {submitNewTask ? <Button onClick={createNewTask} colorScheme='whatsapp'>Save</Button> : <Button colorScheme='whatsapp' onClick={saveAndCloseModal}>Save & Close</Button>}
+          <Button onClick={createNewTask} colorScheme='whatsapp'>Save</Button>
 
         </ModalFooter>
       </ModalContent>

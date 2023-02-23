@@ -6,11 +6,12 @@ import { useGSDContext } from '../../context/context'
 import { TaskModal } from '../../component/TaskModal'
 import { ControlBar } from '../../component/ControlBar'
 import { TaskList } from '../../component/Task/TaskList'
+import { FrequencyEnum } from '../../hooks/types/task'
 
 const TaskPage = () => {
   const { addTask, loading, newestFist, updateSort, user, getTaskList, controlValue } = useGSDContext()
 
-  const submitNewTask = (task: string, description?: string) => addTask(task, description)
+  const submitNewTask = (task: string, description?: string, duration?: number, frequency?: FrequencyEnum) => addTask(task, description, duration, frequency)
   const { isOpen, onOpen, onClose } = useDisclosure()
   useEffect(() => {
     if (user && user?.id) {

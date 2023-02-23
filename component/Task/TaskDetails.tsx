@@ -11,17 +11,17 @@ type TaskDetailsProps = {
 
 export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) => {
   const getReadOnly = () => (
-    <>
+    <VStack alignItems={'start'}>
       <Text>Name: {task.name}</Text>
       <Text>Description: {task.description}</Text>
-      <Text>Duration: {task.duration}</Text>
+      <Text>Duration: {task.duration} min</Text>
       <Text>Frequency: {Frequency[task.frequency]}</Text>
       <Text>{lastUpdated(task.lastUpdated)}</Text>
       <HStack>
         <Text color={'blackAlpha.500'} fontWeight='bold'>Active</Text>
         <Switch isChecked={task?.active} disabled />
       </HStack>
-    </>
+    </VStack>
   )
   const getEdit = () => {
     return (
@@ -42,7 +42,7 @@ export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) =>
         />
          <Input
           value={task?.duration}
-          onChange={(event) => updateTask(event?.target?.value, 'name')}
+          onChange={(event) => updateTask(event?.target?.value, 'duration')}
           color="blackAlpha.700"
           borderColor={'facebook.900'}
           type='number'
