@@ -1,5 +1,5 @@
 import moment from "moment";
-import { CardViewControls, NoteObject, Task, TaskNote } from "../hooks/types/task";
+import { CardViewControls, Frequency, NoteObject, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
 export const seconds = 'seconds';
@@ -71,4 +71,17 @@ export const lastUpdated = (lastUpdated: number) => {
     return `Updated: ${duration.hours()}h ${duration.minutes()}m ago`
   }
   return `Updated: ${duration.minutes()}m ago`
+}
+
+export const getfrequency = (task: Task) => {
+  switch (task?.frequency) {
+    case 0:
+      return `${task.duration} min every day`
+    case 1:
+      return `${task.duration} min every week`
+    case 2:
+      return `${task.duration} min every month`
+    default:
+      return '';
+  }
 }
