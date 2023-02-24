@@ -1,9 +1,8 @@
 import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton, Box } from '@chakra-ui/react'
-import React, { useContext } from 'react'
-import { Frequency, FrequencyString, Task } from '../../hooks/types/task';
-import moment from "moment"
-import { getCardTheme, seconds, lastUpdated } from '../../utils/task.utils';
-import { SettingsIcon } from '@chakra-ui/icons';
+import React from 'react'
+import { FrequencyString, Task } from '../../hooks/types/task';
+import { getCardTheme, lastUpdated } from '../../utils/task.utils';
+import { toHHMMDisplay } from '../../utils/time.utils';
 type Props = {
   task: Task;
 }
@@ -24,8 +23,8 @@ export const TaskCard = ({ task }: Props) => {
       </CardHeader>
       <CardBody>
         <Text color="gray.900">{lastUpdated(task.lastUpdated)}</Text>
-        <Text color="gray.900">{`${task.duration} min every ${FrequencyString[task.frequency]}`}</Text>
-        {task.percentComplete && <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text>}
+        <Text color="gray.900">{`${toHHMMDisplay(task.duration)} every ${FrequencyString[task.frequency]}`}</Text>
+        <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text>
       </CardBody>
     </Card>
   )

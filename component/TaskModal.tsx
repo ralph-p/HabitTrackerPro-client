@@ -2,6 +2,7 @@ import { Button, HStack, Modal, ModalBody, ModalContent, ModalFooter, ModalHeade
 import React, { useState } from 'react'
 import { FrequencyEnum, Task } from '../hooks/types/task';
 import { getCardTheme } from '../utils/task.utils';
+import { TimeInput } from './TimeInput';
 
 type Props = {
   isOpen: boolean;
@@ -18,6 +19,7 @@ const newTask = {
   lastUpdated: 0,
   active: true,
   duration: 0,
+  percentComplete: 0,
 }
 export const TaskModal = ({ isOpen, onClose, submitNewTask }: Props) => {
   const [modalTask, setModalTask] = useState<Task>(newTask)
@@ -31,6 +33,10 @@ export const TaskModal = ({ isOpen, onClose, submitNewTask }: Props) => {
       setModalTask(newTask)
       onClose()
     }
+  }
+  const setMinuteValue = (value: number) => {
+    setModalTask({ ...modalTask, duration: value })
+
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered >
@@ -53,20 +59,9 @@ export const TaskModal = ({ isOpen, onClose, submitNewTask }: Props) => {
               size='sm'
             />
             <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Time Commitment</FormLabel>
-            <NumberInput>
-              <NumberInputField
-                placeholder='min'
-                color={'blackAlpha.900'}
-                backgroundColor="whiteAlpha.600"
-                value={modalTask?.duration}
-                onChange={(event) => updateModalTask(event?.target?.value, 'duration')}
-                min={0}
-                defaultValue={0}
-                id='duration'
-              />
-            </NumberInput>
+            <TimeInput setMinuteValue={setMinuteValue} />
             <FormLabel color={'blackAlpha.500'} fontWeight='bold'>Frequency</FormLabel>
-            <Select placeholder='Select...(default daily)' onChange={({target: {value}}) => updateModalTask(value, 'frequency')}>
+            <Select placeholder='Select...(default daily)' onChange={({ target: { value } }) => updateModalTask(value, 'frequency')}>
               <option value={0}>Daily</option>
               <option value={1}>Weekly</option>
               <option value={2}>Monthly</option>
