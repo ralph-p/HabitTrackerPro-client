@@ -25,7 +25,7 @@ export const TaskCard = ({ task }: Props) => {
       <CardBody>
         <Text color="gray.900">{lastUpdated(task.lastUpdated)}</Text>
         <Text color="gray.900">{`${task.duration} min every ${FrequencyString[task.frequency]}`}</Text>
-        <Text color="gray.900">{`${(task?.percentComplete).toFixed(1)}% complete`}</Text>
+        {task.percentComplete && <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text>}
       </CardBody>
     </Card>
   )
