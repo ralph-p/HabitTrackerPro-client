@@ -16,6 +16,7 @@ export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) =>
     <VStack alignItems={'start'}>
       <Text>Name: {task.name}</Text>
       <Text>Description: {task.description}</Text>
+      <Text>Amount complete: {task.percentComplete.toFixed(1)}%</Text>
       <Text>Duration: {toHHMMDisplay(task.duration)} every {FrequencyString[task.frequency]}</Text>
       <Text>{lastUpdated(task.lastUpdated)}</Text>
       <HStack>
