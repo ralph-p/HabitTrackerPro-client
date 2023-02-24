@@ -36,3 +36,8 @@ export type Task = {
       1: 'Weekly',
       2: 'Monthly',
   }
+  export const FrequencyString = {
+      0: 'day',
+      1: 'week',
+      2: 'month',
+  }

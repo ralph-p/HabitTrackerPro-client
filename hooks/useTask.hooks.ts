@@ -1,7 +1,7 @@
 import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds } from '../utils/task.utils';
+import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds, getPercentDone } from '../utils/task.utils';
 import { CardViewControls, FrequencyEnum, Task, TaskNote } from './types/task';
 
 export const useTask = () => {
@@ -29,7 +29,7 @@ export const useTask = () => {
           updated_at, 
           frequency,
           duration,
-          task_note(id, note, inserted_at)
+          task_note(id, note, inserted_at, time)
         `)
         .eq('user_id', session?.user?.id)
       if (error && status !== 406) {
@@ -39,25 +39,25 @@ export const useTask = () => {
         let newTaskList: Task[] = []
         data.map((task) => {
           if (Array.isArray(task.task_note)) {
-            let resNotes: TaskNote[] | [] = task.task_note.map(
-              (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at })
+            let taskNotes: TaskNote[] | [] = task.task_note.map(
+              (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
             )
             // map over the task note array and build an array of task notes, then sort by latest completed item
-            resNotes = sortTaskNotesNewFirst(resNotes)
-            const updatedString = resNotes.length ? resNotes[0].inserted_at : task.inserted_at
+            taskNotes = sortTaskNotesNewFirst(taskNotes)
+            const updatedString = taskNotes.length ? taskNotes[0].inserted_at : task.inserted_at
             const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
-            const noteObject = mapNoteObject(resNotes)
+            const percentComplete = getPercentDone(taskNotes, task.duration, task.frequency)
             const newRes: Task = {
               id: task.id,
               name: task.name,
               active: task.active,
               inserted_at: task.inserted_at,
-              notes: resNotes,
+              notes: taskNotes,
               description: task.description,
-              noteObject,
               lastUpdated: lastUpdatedDuration,
               duration: task.duration,
               frequency: task.frequency,
+              percentComplete,
             }
             newTaskList.push(newRes)
           }
@@ -131,14 +131,14 @@ export const useTaskControl = (taskId: string) => {
           throw error
         }
         if (data && Array.isArray(data.task_note)) {
-          let resNotes: TaskNote[] | [] = data?.task_note.map(
+          let taskNotes: TaskNote[] | [] = data?.task_note.map(
             (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
           )
           // map over the task note array and build an array of task notes, then sort by latest completed item
-          resNotes = sortTaskNotesNewFirst(resNotes)
-          const updatedString = resNotes.length ? resNotes[0].inserted_at : data.inserted_at
+          taskNotes = sortTaskNotesNewFirst(taskNotes)
+          const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
           const duration = moment().diff(moment(updatedString), seconds)
-          const noteObject = mapNoteObject(resNotes)
+          const noteObject = mapNoteObject(taskNotes)
           setTask({
             id: data.id,
             name: data.name,
@@ -149,7 +149,7 @@ export const useTaskControl = (taskId: string) => {
             active: data.active,
             duration: data.duration,
             frequency: data.frequency,
-            notes: resNotes,
+            notes: taskNotes,
           })
         }
 

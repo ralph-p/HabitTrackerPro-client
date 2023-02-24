@@ -1,5 +1,5 @@
-import moment from "moment";
-import { CardViewControls, Frequency, NoteObject, Task, TaskNote } from "../hooks/types/task";
+import moment, {unitOfTime} from "moment";
+import { CardViewControls, Frequency, FrequencyEnum, FrequencyString, NoteObject, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
 export const seconds = 'seconds';
@@ -73,15 +73,28 @@ export const lastUpdated = (lastUpdated: number) => {
   return `Updated: ${duration.minutes()}m ago`
 }
 
-export const getfrequency = (task: Task) => {
-  switch (task?.frequency) {
+export const getPercentDone = (taskNotes: TaskNote[], duration: number, frequency: FrequencyEnum) => {
+  const today  = new Date()
+  let notesInRange: TaskNote[] = []
+  switch (frequency) {
     case 0:
-      return `${task.duration} min every day`
+      notesInRange = taskNotes.filter((note) => moment(note.inserted_at).isSame(today, 'day'))
+
+      break
     case 1:
-      return `${task.duration} min every week`
+      notesInRange = taskNotes.filter((note) => moment(note.inserted_at).isSame(today, 'week'))
+
+      break
     case 2:
-      return `${task.duration} min every month`
+      notesInRange = taskNotes.filter((note) => moment(note.inserted_at).isSame(today, 'month'))
+
+      break
     default:
-      return '';
+      break;
   }
+  const amountComplete = notesInRange.reduce((accumulator, note) => {
+    return accumulator + (note.time || 0);
+  }, 0);
+  
+  return (amountComplete/duration) * 100
 }
