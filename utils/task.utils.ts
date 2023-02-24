@@ -1,4 +1,4 @@
-import moment, {unitOfTime} from "moment";
+import moment, { unitOfTime } from "moment";
 import { CardViewControls, Frequency, FrequencyEnum, FrequencyString, NoteObject, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
@@ -8,7 +8,7 @@ export const formatDate = (dateString: string) => {
 }
 
 export const mapNoteObject = (taskNotes: TaskNote[]) => {
-  const notes: NoteObject = {}  
+  const notes: NoteObject = {}
   taskNotes.forEach((note) => {
     const noteDate = formatDate(note.inserted_at)
     if (notes[noteDate]) {
@@ -47,7 +47,6 @@ export const filterTasks = (tasks: Task[], filterValue: CardViewControls): Task[
     default:
       return tasks;
   }
-  return []
 }
 export const getCardTheme = (lastUpdated?: number) => {
   if (!lastUpdated) return { switchColor: 'grey', cardColor: 'green.600' }
@@ -74,7 +73,7 @@ export const lastUpdated = (lastUpdated: number) => {
 }
 
 export const getPercentDone = (taskNotes: TaskNote[], duration: number, frequency: FrequencyEnum) => {
-  const today  = new Date()
+  const today = new Date()
   let notesInRange: TaskNote[] = []
   switch (frequency) {
     case 0:
@@ -95,6 +94,60 @@ export const getPercentDone = (taskNotes: TaskNote[], duration: number, frequenc
   const amountComplete = notesInRange.reduce((accumulator, note) => {
     return accumulator + (note.time || 0);
   }, 0);
-  
-  return (amountComplete/duration) * 100
+
+  return (amountComplete / duration) * 100
+}
+
+export const getTaskObjectFromDTO = (taskDTO: {
+  id: any;
+} & {
+  name: any;
+} & {
+  active: any;
+} & {
+  inserted_at: any;
+} & {
+  name: any;
+} & {
+  description: any;
+} & {
+  updated_at: any;
+} & {
+  frequency: any;
+} & {
+  duration: any;
+} & {
+  task_note: ({
+    id: any;
+  } & {
+    note: any;
+  } & {
+    inserted_at: any;
+  } & {
+    time: any;
+  })[] | null;
+}) => {
+  if (Array.isArray(taskDTO.task_note)) {
+    let taskNotes: TaskNote[] | [] = taskDTO.task_note.map(
+      (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
+    )
+    // map over the task note array and build an array of task notes, then sort by latest completed item
+    taskNotes = sortTaskNotesNewFirst(taskNotes)
+    const updatedString = taskNotes.length ? taskNotes[0].inserted_at : taskDTO.inserted_at
+    const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
+    const percentComplete = getPercentDone(taskNotes, taskDTO.duration, taskDTO.frequency)
+    const newTask: Task = {
+      id: taskDTO.id,
+      name: taskDTO.name,
+      active: taskDTO.active,
+      inserted_at: taskDTO.inserted_at,
+      notes: taskNotes,
+      description: taskDTO.description,
+      lastUpdated: lastUpdatedDuration,
+      duration: taskDTO.duration,
+      frequency: taskDTO.frequency,
+      percentComplete,
+    }
+    return newTask;
+  }
 }

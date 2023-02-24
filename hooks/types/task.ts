@@ -3,13 +3,13 @@ export type Task = {
     name: string;
     active: boolean;
     frequency: FrequencyEnum;
+    percentComplete: number;
+    duration: number;
     description?: string;
-    duration?: number;
     inserted_at: string;
     lastUpdated: number;
     notes?: TaskNote[];
     noteObject?: NoteObject;
-    percentComplete?: number;
   }
   
   export type NoteObject = {

@@ -139,6 +139,7 @@ export const useTaskControl = (taskId: string) => {
           const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
           const duration = moment().diff(moment(updatedString), seconds)
           const noteObject = mapNoteObject(taskNotes)
+          const percentComplete = getPercentDone(taskNotes, data.duration, data.frequency)
           setTask({
             id: data.id,
             name: data.name,
@@ -150,6 +151,7 @@ export const useTaskControl = (taskId: string) => {
             duration: data.duration,
             frequency: data.frequency,
             notes: taskNotes,
+            percentComplete,
           })
         }
 
@@ -175,7 +177,7 @@ export const useTaskControl = (taskId: string) => {
     try {
       const { error } = await supabase
         .from('task')
-        .update({ name: task.name, description: task.description, active: task.active, duration: task.duration })
+        .update({ name: task.name, description: task.description, active: task.active, duration: task.duration, frequency: task.frequency })
         .eq('user_id', session?.user?.id)
         .eq('id', task.id)
         getTask()

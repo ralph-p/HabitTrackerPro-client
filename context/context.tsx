@@ -18,9 +18,6 @@ interface GSDContextProps {
   controlValue: CardViewControls;
   setControlValue: (value: CardViewControls) => void;
   getTaskList: () => void;
-  addToDo: (name: string, description?: string | undefined, dueDate?: string | undefined) => void,
-  getToDoList: () => void;
-  toDoList: ToDo[];
 
 }
 export const GSDContext = createContext<GSDContextProps>({
@@ -36,9 +33,6 @@ export const GSDContext = createContext<GSDContextProps>({
   taskList: [],
   setControlValue: () => { },
   getTaskList: () => { },
-  addToDo: () => { },
-  getToDoList: () => { },
-  toDoList: [],
 
 })
 
@@ -59,7 +53,6 @@ export const Context = ({ children }: Props) => {
     setControlValue,
     getTaskList,
   } = useTask()
-  const {addToDo, getToDoList, toDoList} = useToDo()
   useEffect(() => {
     if (session) {
       setCurrentUser(session.user)
@@ -82,9 +75,6 @@ export const Context = ({ children }: Props) => {
       controlValue,
       setControlValue,
       getTaskList,
-      addToDo,
-      getToDoList,
-      toDoList,
     }}>{children}</GSDContext.Provider>
   )
 }

@@ -16,6 +16,8 @@ const newTask = {
   lastUpdated: 0,
   active: true,
   frequency: 0,
+  percentComplete: 0,
+  duration: 0,
 }
 const TaskPage = () => {
   const router = useRouter()
@@ -26,11 +28,11 @@ const TaskPage = () => {
   const submitNote = (note: string, time?: string) => addTaskNote(taskId, note, time)
   const [taskState, setTaskState] = useState<Task>(newTask)
   const [readOnly, setReadOnly] = useState(true)
-  const updateStateTask = (value: string | boolean, key: string) => {
+  const updateStateTask = (value: number | string | boolean, key: string) => {
     setTaskState((currentTaskState) => ({ ...currentTaskState, [key]: value }))
   }
   useEffect(() => {
-    if (user && user.id && id) {
+    if (user && user.id && id && taskState.id === '') {
       getTask()
     }
   }, [user, id])
