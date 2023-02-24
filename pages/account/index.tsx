@@ -1,14 +1,13 @@
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Code, Input, Spinner, Stack, StackDivider, Text, VStack } from '@chakra-ui/react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import moment from 'moment'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useGSDContext } from '../../context/context'
 import { useProfile } from '../../hooks/useProfile.hooks'
 
 type Props = {}
 
 const ToDo = (props: Props) => {
-  const { addToDo, getToDoList, user, session } = useGSDContext()
+  const { session } = useGSDContext()
   const supabase = useSupabaseClient()
 
   const { account, loading, signOut } = useProfile(session)
