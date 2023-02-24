@@ -1,4 +1,4 @@
-import { VStack, Text, HStack, Switch, Textarea, Input } from '@chakra-ui/react';
+import { VStack, Text, HStack, Switch, Textarea, Input, Select } from '@chakra-ui/react';
 import React from 'react'
 import { Task, Frequency, FrequencyString } from '../../hooks/types/task'
 import { lastUpdated } from '../../utils/task.utils'
@@ -41,14 +41,12 @@ export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) =>
           borderColor={'facebook.900'}
           size='sm'
         />
-        <TimeInput setMinuteValue={(value) => updateTask(value, 'duration')} initalValue={task?.duration}/>
-         {/* <Input
-          value={task?.duration}
-          onChange={(event) => updateTask(event?.target?.value, 'duration')}
-          color="blackAlpha.700"
-          borderColor={'facebook.900'}
-          type='number'
-        /> */}
+        <TimeInput setMinuteValue={(value) => updateTask(value, 'duration')} initalValue={task?.duration} />
+        <Select placeholder='Select...' onChange={({ target: { value } }) => updateTask(value, 'frequency')} value={task.frequency}>
+          <option value={0}>Daily</option>
+          <option value={1}>Weekly</option>
+          <option value={2}>Monthly</option>
+        </Select>
         <HStack>
           <Text color={'blackAlpha.500'} fontWeight='bold'>Active</Text>
           <Switch isChecked={task?.active} onChange={() => updateTask(!task?.active, 'active')} />

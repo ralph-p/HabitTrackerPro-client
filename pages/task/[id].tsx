@@ -28,7 +28,7 @@ const TaskPage = () => {
   const submitNote = (note: string, time?: string) => addTaskNote(taskId, note, time)
   const [taskState, setTaskState] = useState<Task>(newTask)
   const [readOnly, setReadOnly] = useState(true)
-  const updateStateTask = (value: string | boolean, key: string) => {
+  const updateStateTask = (value: number | string | boolean, key: string) => {
     setTaskState((currentTaskState) => ({ ...currentTaskState, [key]: value }))
   }
   useEffect(() => {
