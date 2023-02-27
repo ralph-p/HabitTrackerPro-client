@@ -1,8 +1,8 @@
 import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
-import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds, getPercentDone } from '../utils/task.utils';
-import { CardViewControls, FrequencyEnum, Task, TaskNote } from './types/task';
+import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds, getPercentDone, sortSubtaskNewFirst } from '../utils/task.utils';
+import { CardViewControls, FrequencyEnum, Subtask, Task, TaskNote } from './types/task';
 
 export const useTask = () => {
   const supabase = useSupabaseClient()
@@ -105,12 +105,12 @@ export const useTask = () => {
   }
 }
 
-export const useTaskControl = (taskId: string) => {
+export const useTaskControl = () => {
   const supabase = useSupabaseClient()
   const session = useSession()
   const [task, setTask] = useState<Task | null>(null)
 
-  const getTask = async () => {
+  const getTask = async (taskId: string) => {
     try {
       const { data, error, status } = await supabase
         .from('task')
@@ -123,19 +123,25 @@ export const useTaskControl = (taskId: string) => {
         updated_at, 
         duration,
         frequency,
-        task_note(id, note, inserted_at, time)`)
+        task_note(id, note, inserted_at, time),
+        subtask(id, name, description, complete, inserted_at)
+        `)
         .eq('user_id', session?.user?.id)
         .eq('id', taskId)
         .single()
         if (error && status !== 406) {
           throw error
         }
-        if (data && Array.isArray(data.task_note)) {
+        if (data && Array.isArray(data.task_note) && Array.isArray(data.subtask)) {
           let taskNotes: TaskNote[] | [] = data?.task_note.map(
             (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
           )
+          let subtasks: Subtask[] | [] = data?.subtask.map(
+            (n) => ({ id: n.id, name: n.name, inserted_at: n.inserted_at, description: n.description, complete: n.complete })
+          )
           // map over the task note array and build an array of task notes, then sort by latest completed item
           taskNotes = sortTaskNotesNewFirst(taskNotes)
+          subtasks = sortSubtaskNewFirst(subtasks)
           const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
           const duration = moment().diff(moment(updatedString), seconds)
           const noteObject = mapNoteObject(taskNotes)
@@ -152,6 +158,7 @@ export const useTaskControl = (taskId: string) => {
             frequency: data.frequency,
             notes: taskNotes,
             percentComplete,
+            subtasks,
           })
         }
 
@@ -165,7 +172,21 @@ export const useTaskControl = (taskId: string) => {
         const { error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: session?.user?.id, time: time ? parseInt(time) : 0 })
-          getTask();
+          getTask(taskId);
+      } catch (error) {
+        alert('Error adding note data!')
+      }
+    } else {
+      alert('Enter a task note')
+    }
+  }
+  const addSubtask = async (taskId: string, name: string, description?: string) => {
+    if (taskId && name) {
+      try {
+        const { error } = await supabase
+          .from('subtask')
+          .upsert({ name, description,  task_id: taskId, user_id: session?.user?.id, complete: false })
+          getTask(taskId);
       } catch (error) {
         alert('Error adding note data!')
       }
@@ -180,11 +201,11 @@ export const useTaskControl = (taskId: string) => {
         .update({ name: task.name, description: task.description, active: task.active, duration: task.duration, frequency: task.frequency })
         .eq('user_id', session?.user?.id)
         .eq('id', task.id)
-        getTask()
+        getTask(task.id)
         alert(`Updated ${task.name}!`)
     } catch (error) {
       alert('Error updating the task status!')
     }
   }
-  return{getTask, task, addTaskNote, updateTask}
+  return{getTask, task, addTaskNote, updateTask, addSubtask}
 }
