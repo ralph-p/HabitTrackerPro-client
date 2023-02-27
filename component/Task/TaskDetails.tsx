@@ -1,4 +1,4 @@
-import { VStack, Text, HStack, Switch, Textarea, Input, Select } from '@chakra-ui/react';
+import { VStack, Text, HStack, Switch, Textarea, Input, Select, List, ListItem } from '@chakra-ui/react';
 import React from 'react'
 import { Task, Frequency, FrequencyString } from '../../hooks/types/task'
 import { lastUpdated } from '../../utils/task.utils'
@@ -51,7 +51,6 @@ export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) =>
         <HStack>
           <Text color={'blackAlpha.500'} fontWeight='bold'>Active</Text>
           <Switch isChecked={task?.active} onChange={() => updateTask(!task?.active, 'active')} />
-
         </HStack>
       </>
     )

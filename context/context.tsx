@@ -1,10 +1,11 @@
 import { useSession } from '@supabase/auth-helpers-react'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { CardViewControls, FrequencyEnum, Task } from '../hooks/types/task';
-import { useTask } from '../hooks/useTask.hooks';
-import { ToDo, useToDo } from '../hooks/useToDo.hooks';
+import { useTask, useTaskControl } from '../hooks/useTask.hooks';
 
+const voidFunction = async () => {
 
+}
 interface GSDContextProps {
   session: any;
   user: any;
@@ -18,22 +19,31 @@ interface GSDContextProps {
   controlValue: CardViewControls;
   setControlValue: (value: CardViewControls) => void;
   getTaskList: () => void;
+  getTask: (taskId: string) => Promise<void>;
+  task: Task | null;
+  addTaskNote: (taskId: string, note: string, time?: string | undefined) => Promise<void>; 
+  updateTask: (task: Task) => Promise<void>; 
+  addSubtask: (taskId: string, name: string, description?: string | undefined) => Promise<void>;
 
 }
 export const GSDContext = createContext<GSDContextProps>({
   session: null,
   user: {},
   loading: true,
-  setUser: () => { },
-  setLoading: () => { },
-  addTask: () => { },
-  updateSort: () => { },
+  setUser: voidFunction,
+  setLoading: voidFunction,
+  addTask: voidFunction,
+  updateSort: voidFunction,
   controlValue: CardViewControls.ACTIVE,
   newestFist: true,
   taskList: [],
-  setControlValue: () => { },
-  getTaskList: () => { },
-
+  setControlValue: voidFunction,
+  getTaskList: voidFunction,
+  getTask: voidFunction,
+  task: null, 
+  updateTask: voidFunction, 
+  addTaskNote: voidFunction, 
+  addSubtask: voidFunction, 
 })
 
 interface Props {
@@ -53,6 +63,8 @@ export const Context = ({ children }: Props) => {
     setControlValue,
     getTaskList,
   } = useTask()
+  const { getTask, task, addTaskNote, updateTask, addSubtask } = useTaskControl()
+
   useEffect(() => {
     if (session) {
       setCurrentUser(session.user)
@@ -75,6 +87,11 @@ export const Context = ({ children }: Props) => {
       controlValue,
       setControlValue,
       getTaskList,
+      getTask,
+      task,
+      addTaskNote,
+      updateTask,
+      addSubtask
     }}>{children}</GSDContext.Provider>
   )
 }

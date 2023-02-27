@@ -1,5 +1,5 @@
 import moment, { unitOfTime } from "moment";
-import { CardViewControls, Frequency, FrequencyEnum, FrequencyString, NoteObject, Task, TaskNote } from "../hooks/types/task";
+import { CardViewControls, Frequency, FrequencyEnum, FrequencyString, NoteObject, Subtask, Task, TaskNote } from "../hooks/types/task";
 export const MINUTES_IN_DAY = 1440;
 export const SECONDS_IN_DAY = 86400;
 export const seconds = 'seconds';
@@ -26,6 +26,11 @@ export const sortTaskNotesNewFirst = (taskNotes: TaskNote[]) => {
 
 
   return taskNotes.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
+}
+export const sortSubtaskNewFirst = (subtasks: Subtask[]) => {
+
+
+  return subtasks.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
 }
 
 export const sortTaskNotesOldFirst = (taskNotes: TaskNote[]) => {

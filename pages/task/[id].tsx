@@ -1,8 +1,10 @@
-import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea, ButtonGroup, Button, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Switch, HStack } from '@chakra-ui/react'
+import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea, ButtonGroup, Button, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Switch, HStack, Checkbox } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AddInput } from '../../component/AddInput'
+import { SubTask } from '../../component/Task/SubTask'
 import { TaskDetails } from '../../component/Task/TaskDetails'
+import { TaskNotes } from '../../component/Task/TaskNotes'
 import { useGSDContext } from '../../context/context'
 import { Frequency, Task } from '../../hooks/types/task'
 import { useTaskControl } from '../../hooks/useTask.hooks'
@@ -24,7 +26,7 @@ const TaskPage = () => {
   const { session, user } = useGSDContext()
   const { id } = router.query
   const taskId = id as string;
-  const { getTask, task, addTaskNote, updateTask } = useTaskControl(taskId)
+  const { getTask, task, addTaskNote, updateTask, addSubtask } = useGSDContext()
   const submitNote = (note: string, time?: string) => addTaskNote(taskId, note, time)
   const [taskState, setTaskState] = useState<Task>(newTask)
   const [readOnly, setReadOnly] = useState(true)
@@ -33,7 +35,7 @@ const TaskPage = () => {
   }
   useEffect(() => {
     if (user && user.id && id && taskState.id === '') {
-      getTask()
+      getTask(taskId)
     }
   }, [user, id])
   useEffect(() => {
@@ -65,37 +67,15 @@ const TaskPage = () => {
           <BreadcrumbLink>{task.name}</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      <VStack width={"100%"} spacing={3}>
-        <TaskDetails task={taskState} readOnly={readOnly} updateTask={updateStateTask} />
-        {readOnly ? <Button onClick={editOnClick} colorScheme="facebook">Edit</Button> : (
-          <ButtonGroup>
-            <Button onClick={resetState} colorScheme='red'>Cancel</Button>
-            <Button onClick={saveTask} colorScheme='whatsapp'>Save</Button>
-          </ButtonGroup>
-        )}
-        <AddInput callBack={submitNote} placeholder={`${task.name} note`} />
-      </VStack>
-      <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
-        <Tbody>
-          {
-            Object.entries(task?.noteObject as { date: string[] }).map((date, index) => {
-              return (
-                <Tr key={`${date[0]} - ${index}`}>
-                  <Td display="flex"><Text color={'blackAlpha.700'}>{date[0]}</Text></Td>
-                  <Td>
-                    {date[1].map((note, index) => (
-                      <Tr key={`${date[0]} - ${note} - ${index}`}>
-                        <Text color={'blackAlpha.600'}>{note}</Text>
-                      </Tr>
-                    ))}
-                  </Td>
-                </Tr>
-              );
-            })
-
-          }
-        </Tbody>
-      </Table>
+      <TaskDetails task={taskState} readOnly={readOnly} updateTask={updateStateTask} />
+      {readOnly ? <Button onClick={editOnClick} colorScheme="facebook">Edit</Button> : (
+        <ButtonGroup>
+          <Button onClick={resetState} colorScheme='red'>Cancel</Button>
+          <Button onClick={saveTask} colorScheme='whatsapp'>Save</Button>
+        </ButtonGroup>
+      )}
+      <SubTask />
+      <TaskNotes />
     </VStack>
   )
 }

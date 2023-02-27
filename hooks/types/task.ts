@@ -9,6 +9,7 @@ export type Task = {
     inserted_at: string;
     lastUpdated: number;
     notes?: TaskNote[];
+    subtasks?: Subtask[];
     noteObject?: NoteObject;
   }
   
@@ -20,6 +21,13 @@ export type Task = {
     note: string;
     inserted_at: string;
     time?: number;
+  }
+  export type Subtask = {
+    id: string;
+    name: string;
+    description?: string;
+    inserted_at: string;
+    complete: boolean;
   }
   export enum CardViewControls {
     ACTIVE = 'active',
