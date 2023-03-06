@@ -22,17 +22,18 @@ export const SubTask = (props: Props) => {
   }
   const { isOpen, onOpen, onClose } = useDisclosure()
   const openNoteModal = (subtaskName: string) => {
-    setNoteTaskName(subtaskName)    
+    setNoteTaskName(subtaskName)
     onOpen();
   }
   const closeNoteModal = () => {
-    setNoteTaskName('')    
+    setNoteTaskName('')
     onClose();
   }
 
   return (
     <>
-      {isOpen && <TaskNoteModal isOpen={isOpen} onClose={closeNoteModal} noteString={noteTaskName}/>}
+      {/* Need the conditional render so the modal's use effect sets the input value to the subtask name */}
+      {isOpen && <TaskNoteModal isOpen={isOpen} onClose={closeNoteModal} noteString={noteTaskName} />}
       {
         showNewSubtask ? (<>
           <Input
@@ -47,7 +48,7 @@ export const SubTask = (props: Props) => {
 
           />
           <Button onClick={createSubtask}>Save Subtask</Button>
-        </>) : <Button onClick={() => setShowNewSubtask(true)}>New Subtask</Button>
+        </>) : <><Button onClick={() => setShowNewSubtask(true)}>New Subtask</Button> <Button onClick={() => openNoteModal('')}>Add Note</Button></>
       }
 
       <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
@@ -62,7 +63,7 @@ export const SubTask = (props: Props) => {
                 <Td>{subtask.name}</Td>
                 <Td>{subtask.description}</Td>
                 <Td><Checkbox isChecked={subtask.complete} /></Td>
-                <Td><AddIcon boxSize={4} onClick={() => openNoteModal(subtask.name)} cursor="pointer"/></Td>
+                <Td><AddIcon boxSize={3} onClick={() => openNoteModal(subtask.name)} cursor="pointer" /></Td>
               </Tr>
             ))
           }
