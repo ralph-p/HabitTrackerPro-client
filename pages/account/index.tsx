@@ -22,11 +22,7 @@ const ToDo = (props: Props) => {
           <BreadcrumbLink>Account</BreadcrumbLink>
         </BreadcrumbItem>
       </Breadcrumb>
-      {/* <Text size="md">
-        Add something you want to do more of, and update it whenever you complete the task. <br />
-        If you have updated a task in the last 24 hours your card <Code colorScheme='green' children="will be green" /> if you have a task that hasn't been updated in over 24 <Code colorScheme='yellow' children="will be yellow" /> if it's been more than 3 days <Code colorScheme='red' children="will be red" />
 
-      </Text> */}
       <Stack spacing={3}>
         <Text mb='8px'>Email: {account.email}</Text>
         <Input
