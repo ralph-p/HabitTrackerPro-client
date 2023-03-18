@@ -1,4 +1,5 @@
-import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton, Box } from '@chakra-ui/react'
+import { TimeIcon } from '@chakra-ui/icons';
+import { Card, CardBody, CardHeader, Heading, Text, HStack, useDisclosure, IconButton, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react'
 import React from 'react'
 import { FrequencyString, Task } from '../../hooks/types/task';
 import { getCardTheme, lastUpdated } from '../../utils/task.utils';
@@ -19,12 +20,18 @@ export const TaskCard = ({ task }: Props) => {
           <Heading size="md" color="blackAlpha.800">
             {task.name}
           </Heading>
+          <Text color="gray.900">{`${toHHMMDisplay(task.duration)} every ${FrequencyString[task.frequency]}`}</Text>
+
         </HStack>
       </CardHeader>
       <CardBody>
-        <Text color="gray.900">{lastUpdated(task.lastUpdated)}</Text>
-        <Text color="gray.900">{`${toHHMMDisplay(task.duration)} every ${FrequencyString[task.frequency]}`}</Text>
-        <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text>
+        <HStack spacing={2} justifyContent='space-between'>
+          <Text color="gray.900"><TimeIcon />{lastUpdated(task.lastUpdated)}</Text>
+          <CircularProgress value={task.percentComplete} color='green.400'>
+            <CircularProgressLabel><Text color="gray.900">{`${(task.percentComplete).toFixed(1)}%`}</Text></CircularProgressLabel>
+          </CircularProgress>
+        </HStack>
+        {/* <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text> */}
       </CardBody>
     </Card>
   )
