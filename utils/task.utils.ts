@@ -69,12 +69,12 @@ export const getCardTheme = (lastUpdated?: number) => {
 export const lastUpdated = (lastUpdated: number) => {
   const duration = moment.duration(lastUpdated, seconds)
   if (duration.days() > 0) {
-    return `Updated: ${duration.days()}d ${duration.hours()}h ago`
+    return ` ${duration.days()}d ${duration.hours()}h ago`
   }
   if (duration.hours() > 0) {
-    return `Updated: ${duration.hours()}h ${duration.minutes()}m ago`
+    return ` ${duration.hours()}h ${duration.minutes()}m ago`
   }
-  return `Updated: ${duration.minutes()}m ago`
+  return ` ${duration.minutes()}m ago`
 }
 
 export const getPercentDone = (taskNotes: TaskNote[], duration: number, frequency: FrequencyEnum) => {

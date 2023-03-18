@@ -2,6 +2,7 @@ import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { AddInput } from '../../component/AddInput'
+import { BreadCrumb } from '../../component/BreadCrumb'
 import { SubTask } from '../../component/Task/SubTask'
 import { TaskDetails } from '../../component/Task/TaskDetails'
 import { TaskNotes } from '../../component/Task/TaskNotes'
@@ -21,6 +22,7 @@ const newTask = {
   percentComplete: 0,
   duration: 0,
 }
+const navItems = [{ link: '/', name: 'Home' }, { link: '/task', name: 'Task' }]
 const TaskPage = () => {
   const router = useRouter()
   const { session, user } = useGSDContext()
@@ -55,18 +57,14 @@ const TaskPage = () => {
     return <Spinner />
   }
   return task && (
-    <VStack spacing={2}>
-      <Breadcrumb fontWeight='medium' fontSize='sm'>
-        <BreadcrumbItem>
-          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          <BreadcrumbLink href='/task'>Task List</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          <BreadcrumbLink>{task.name}</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
+    <VStack
+      spacing={2}
+      maxW="90%"
+      height="80vh"
+      overflow={'scroll'}
+      overflowX="hidden"
+    >
+      <BreadCrumb items={navItems} />
       <TaskDetails task={taskState} readOnly={readOnly} updateTask={updateStateTask} />
       {readOnly ? <Button onClick={editOnClick} colorScheme="facebook">Edit</Button> : (
         <ButtonGroup>
