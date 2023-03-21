@@ -1,27 +1,21 @@
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Code, Input, Spinner, Stack, StackDivider, Text, VStack } from '@chakra-ui/react'
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { Button, Input, Spinner, Stack, Text, VStack } from '@chakra-ui/react'
 import React from 'react'
+import { BreadCrumb } from '../../component/BreadCrumb'
 import { useGSDContext } from '../../context/context'
 import { useProfile } from '../../hooks/useProfile.hooks'
 
 type Props = {}
+const navItems = [{ link: '/', name: 'Home' }, { name: 'Account' }]
 
-const ToDo = (props: Props) => {
+const Account = (props: Props) => {
   const { session } = useGSDContext()
-  const supabase = useSupabaseClient()
 
   const { account, loading, signOut } = useProfile(session)
   if (loading) return <Spinner />
   return (
     <VStack paddingTop={4}>
-      <Breadcrumb fontWeight='medium' fontSize='sm'>
-        <BreadcrumbItem>
-          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          <BreadcrumbLink>Account</BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
+      <BreadCrumb items={navItems} />
+
 
       <Stack spacing={3}>
         <Text mb='8px'>Email: {account.email}</Text>
@@ -45,4 +39,4 @@ const ToDo = (props: Props) => {
   )
 }
 
-export default ToDo
+export default Account
