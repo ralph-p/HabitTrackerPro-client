@@ -1,15 +1,12 @@
-import { Flex, Spinner, VStack, Text, Table, Tbody, Tr, Td, Box, Input, Textarea, ButtonGroup, Button, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Switch, HStack, Checkbox } from '@chakra-ui/react'
+import { Spinner, VStack, ButtonGroup, Button, Switch, HStack, Checkbox } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { AddInput } from '../../component/AddInput'
 import { BreadCrumb } from '../../component/BreadCrumb'
 import { SubTask } from '../../component/Task/SubTask'
 import { TaskDetails } from '../../component/Task/TaskDetails'
 import { TaskNotes } from '../../component/Task/TaskNotes'
 import { useGSDContext } from '../../context/context'
-import { Frequency, Task } from '../../hooks/types/task'
-import { useTaskControl } from '../../hooks/useTask.hooks'
-import { lastUpdated } from '../../utils/task.utils'
+import { Task } from '../../hooks/types/task'
 
 const newTask = {
   id: '',
@@ -22,7 +19,6 @@ const newTask = {
   percentComplete: 0,
   duration: 0,
 }
-const navItems = [{ link: '/', name: 'Home' }, { link: '/task', name: 'Task' }]
 const TaskPage = () => {
   const router = useRouter()
   const { session, user } = useGSDContext()
@@ -32,6 +28,8 @@ const TaskPage = () => {
   const submitNote = (note: string, time?: string) => addTaskNote(taskId, note, time)
   const [taskState, setTaskState] = useState<Task>(newTask)
   const [readOnly, setReadOnly] = useState(true)
+  const navItems = [{ link: '/', name: 'Home' }, { link: '/task', name: 'Task' }, { name: task?.name }]
+
   const updateStateTask = (value: number | string | boolean, key: string) => {
     setTaskState((currentTaskState) => ({ ...currentTaskState, [key]: value }))
   }

@@ -12,7 +12,7 @@ export const BreadCrumb = ({ items }: Props) => {
       {
         items.map((item) => (
           <BreadcrumbItem key={`${item.link}-${item.name}-key`}>
-            <BreadcrumbLink href={item.link}>{item.name}</BreadcrumbLink>
+            {item.link ? <BreadcrumbLink href={item.link}>{item.name}</BreadcrumbLink> : <BreadcrumbLink>{item.name}</BreadcrumbLink>}
           </BreadcrumbItem>
         ))
       }
