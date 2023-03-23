@@ -14,7 +14,8 @@ const Home = () => {
         <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
       ) : (
         <VStack spacing={3} alignItems={'normal'} padding="2em">
-          <Button as={'a'} href="/task" colorScheme="facebook">Get Stuff Done</Button>
+          <Button as={'a'} href="/task" colorScheme="facebook">Get Stuff Done List</Button>
+          <Button as={'a'} href="/task/scheduled" colorScheme="facebook">Scheduled Tasks</Button>
           <Button as={'a'} href="/account" colorScheme="facebook">Account</Button>
         </VStack>
       )}
