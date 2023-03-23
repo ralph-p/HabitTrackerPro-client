@@ -1,5 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons'
-import { Button, Checkbox, Input, Spinner, Table, Tbody, Td, Textarea, Tfoot, Th, Tr, useDisclosure } from '@chakra-ui/react'
+import { Button, Checkbox, Container, Input, Spinner, Table, Tbody, Td, Textarea, Tfoot, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useGSDContext } from '../../context/context'
 import TaskNoteModal from './TaskNoteModal'
@@ -50,25 +50,30 @@ export const SubTask = (props: Props) => {
           <Button onClick={createSubtask}>Save Subtask</Button>
         </>) : <><Button onClick={() => setShowNewSubtask(true)}>New Subtask</Button> <Button onClick={() => openNoteModal('')}>Add Note</Button></>
       }
+      <Container>
+        <Table size="md" variant="simple" backgroundColor={'gray.100'} borderRadius=".5em" overflow={'scroll'}>
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Description</Th>
+              <Th>Add Note</Th>
+            </Tr>
+          </Thead>
+          <Tbody >
 
-      <Table size="sm" variant="unstyled" backgroundColor={'gray.100'} borderRadius=".5em">
-        <Tbody>
-          <Th>Name</Th>
-          <Th>Description</Th>
-          <Th>Complete</Th>
-          <Th>Add Note</Th>
-          {
-            task.subtasks?.map((subtask) => (
-              <Tr>
-                <Td>{subtask.name}</Td>
-                <Td>{subtask.description}</Td>
-                <Td><Checkbox isChecked={subtask.complete} /></Td>
-                <Td><AddIcon boxSize={3} onClick={() => openNoteModal(subtask.name)} cursor="pointer" /></Td>
-              </Tr>
-            ))
-          }
-        </Tbody>
-      </Table>
+            {
+              task.subtasks?.map((subtask) => (
+                <Tr key={`${subtask.id}`}>
+                  <Td>{subtask.name}</Td>
+                  <Td>{subtask.description}</Td>
+                  {/* <Td><Checkbox isChecked={subtask.complete} /></Td> */}
+                  <Td><AddIcon boxSize={3} onClick={() => openNoteModal(subtask.name)} cursor="pointer" /></Td>
+                </Tr>
+              ))
+            }
+          </Tbody>
+        </Table>
+      </Container>
     </>
   )
 }
