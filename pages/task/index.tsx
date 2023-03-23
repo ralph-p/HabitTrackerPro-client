@@ -9,6 +9,7 @@ import { TaskList } from '../../component/Task/TaskList'
 import { FrequencyEnum } from '../../hooks/types/task'
 import { BreadCrumb } from '../../component/BreadCrumb'
 
+
 const TaskPage = () => {
   const { addTask, loading, newestFist, updateSort, user, getTaskList, controlValue } = useGSDContext()
   const navItems = [{ link: '/', name: 'Home' }, { name: 'Task' }]
@@ -24,7 +25,6 @@ const TaskPage = () => {
   return (
     <VStack paddingTop={4}>
       <BreadCrumb items={navItems} />
-
       <HStack>
         <TaskModal isOpen={isOpen} onClose={onClose} submitNewTask={submitNewTask} />
         <Button onClick={onOpen} colorScheme="facebook">Add Task</Button>
