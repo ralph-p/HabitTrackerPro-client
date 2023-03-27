@@ -14,7 +14,7 @@ export const useTask = () => {
 
 
   const updateSort = () => setSortNewestFirst(!sortNewestFirst)
- 
+
   const getTaskList = async () => {
     try {
       setLoading(true)
@@ -111,6 +111,22 @@ export const useTaskControl = () => {
   const [task, setTask] = useState<Task | null>(null)
 
   const getTask = async (taskId: string) => {
+    let url = 'http://127.0.0.1:5000/tasks';
+    let options = {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjc5OTQxNjA3LCJzdWIiOiJlODNlZGU2OC1hYjE2LTRkODctODhhZi1hNmM1MmMxZDM1MmQiLCJlbWFpbCI6Im1ycGVyZWlyYTkxQGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnt9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNjc5OTM4MDA3fV0sInNlc3Npb25faWQiOiI0YjZkM2ZiZi0wZGRmLTQwMTEtODUzYS1lOTI3MTk4NzUxM2QifQ.yJ3dCkE7TOtajA02cMDZD06YUIug1x7yDIubnMv1Ezw'
+      },
+    };
+    let response = await fetch(url, options);
+    let responseOK = response && response.ok;
+    if (responseOK) {
+      let data = await response.json();
+      // do something with data
+    }
     try {
       const { data, error, status } = await supabase
         .from('task')
@@ -129,38 +145,38 @@ export const useTaskControl = () => {
         .eq('user_id', session?.user?.id)
         .eq('id', taskId)
         .single()
-        if (error && status !== 406) {
-          throw error
-        }
-        if (data && Array.isArray(data.task_note) && Array.isArray(data.subtask)) {
-          let taskNotes: TaskNote[] | [] = data?.task_note.map(
-            (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
-          )
-          let subtasks: Subtask[] | [] = data?.subtask.map(
-            (n) => ({ id: n.id, name: n.name, inserted_at: n.inserted_at, description: n.description, complete: n.complete })
-          )
-          // map over the task note array and build an array of task notes, then sort by latest completed item
-          taskNotes = sortTaskNotesNewFirst(taskNotes)
-          subtasks = sortSubtaskNewFirst(subtasks)
-          const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
-          const duration = moment().diff(moment(updatedString), seconds)
-          const noteObject = mapNoteObject(taskNotes)
-          const percentComplete = getPercentDone(taskNotes, data.duration, data.frequency)
-          setTask({
-            id: data.id,
-            name: data.name,
-            description: data.description,
-            inserted_at: data.inserted_at, 
-            noteObject,
-            lastUpdated: duration,
-            active: data.active,
-            duration: data.duration,
-            frequency: data.frequency,
-            notes: taskNotes,
-            percentComplete,
-            subtasks,
-          })
-        }
+      if (error && status !== 406) {
+        throw error
+      }
+      if (data && Array.isArray(data.task_note) && Array.isArray(data.subtask)) {
+        let taskNotes: TaskNote[] | [] = data?.task_note.map(
+          (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
+        )
+        let subtasks: Subtask[] | [] = data?.subtask.map(
+          (n) => ({ id: n.id, name: n.name, inserted_at: n.inserted_at, description: n.description, complete: n.complete })
+        )
+        // map over the task note array and build an array of task notes, then sort by latest completed item
+        taskNotes = sortTaskNotesNewFirst(taskNotes)
+        subtasks = sortSubtaskNewFirst(subtasks)
+        const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
+        const duration = moment().diff(moment(updatedString), seconds)
+        const noteObject = mapNoteObject(taskNotes)
+        const percentComplete = getPercentDone(taskNotes, data.duration, data.frequency)
+        setTask({
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          inserted_at: data.inserted_at,
+          noteObject,
+          lastUpdated: duration,
+          active: data.active,
+          duration: data.duration,
+          frequency: data.frequency,
+          notes: taskNotes,
+          percentComplete,
+          subtasks,
+        })
+      }
 
     } catch (error) {
       alert('Error updating the task status!')
@@ -172,7 +188,7 @@ export const useTaskControl = () => {
         const { error } = await supabase
           .from('task_note')
           .upsert({ note, task_id: taskId, user_id: session?.user?.id, time: time ? parseInt(time) : 0 })
-          getTask(taskId);
+        getTask(taskId);
       } catch (error) {
         alert('Error adding note data!')
       }
@@ -185,8 +201,8 @@ export const useTaskControl = () => {
       try {
         const { error } = await supabase
           .from('subtask')
-          .upsert({ name, description,  task_id: taskId, user_id: session?.user?.id, complete: false })
-          getTask(taskId);
+          .upsert({ name, description, task_id: taskId, user_id: session?.user?.id, complete: false })
+        getTask(taskId);
       } catch (error) {
         alert('Error adding note data!')
       }
@@ -201,11 +217,11 @@ export const useTaskControl = () => {
         .update({ name: task.name, description: task.description, active: task.active, duration: task.duration, frequency: task.frequency })
         .eq('user_id', session?.user?.id)
         .eq('id', task.id)
-        getTask(task.id)
-        alert(`Updated ${task.name}!`)
+      getTask(task.id)
+      alert(`Updated ${task.name}!`)
     } catch (error) {
       alert('Error updating the task status!')
     }
   }
-  return{getTask, task, addTaskNote, updateTask, addSubtask}
+  return { getTask, task, addTaskNote, updateTask, addSubtask }
 }
