@@ -1,8 +1,9 @@
 import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { useEffect, useState } from 'react'
+import { AUTH_TOKEN_KEY } from '../context/context';
 import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds, getPercentDone, sortSubtaskNewFirst } from '../utils/task.utils';
-import { CardViewControls, FrequencyEnum, Subtask, Task, TaskNote } from './types/task';
+import { CardViewControls, FrequencyEnum, Subtask, Task, TaskDTO, TaskNote } from './types/task';
 
 export const useTask = () => {
   const supabase = useSupabaseClient()
@@ -11,65 +12,101 @@ export const useTask = () => {
   const [sortNewestFirst, setSortNewestFirst] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [value, setValue] = useState<CardViewControls>(CardViewControls.ACTIVE)
-
+  const [token, setToken] = useState<string | null>(null)
+  useEffect(() => {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    setToken(token)
+  }, [])
 
   const updateSort = () => setSortNewestFirst(!sortNewestFirst)
 
   const getTaskList = async () => {
+    let url = `http://127.0.0.1:5000/tasks`;
+    let options = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `Bearer ${token}`
+      }
+    };
+    let response = await fetch(url, options);
+    let responseOK = response && response.ok;
+    if (responseOK) {
+      const { tasks }: { tasks: TaskDTO[] } = await response.json();
+      let newTaskList: Task[] = []
+      tasks.map((task) => {
+        const lastUpdatedDuration = moment().diff(moment(task.updated_at), seconds)
+
+        const newTask: Task = {
+          id: task.id,
+          name: task.name,
+          active: task.active,
+          inserted_at: task.inserted_at,
+          description: task.description,
+          lastUpdated: lastUpdatedDuration,
+          duration: task.duration,
+          frequency: task.frequency,
+          amountDone: task.amount_done,
+        }
+        newTaskList.push(newTask)
+      })
+      setTaskList([...newTaskList]);
+    }
     try {
       setLoading(true)
-      let { data, error, status } = await supabase
-        .from('task')
-        .select(`id, 
-          name, 
-          active, 
-          inserted_at, 
-          name, 
-          description, 
-          updated_at, 
-          frequency,
-          duration,
-          task_note(id, note, inserted_at, time)
-        `)
-        .eq('user_id', session?.user?.id)
-      if (error && status !== 406) {
-        throw error
-      }
-      if (data) {
-        let newTaskList: Task[] = []
-        data.map((task) => {
-          if (Array.isArray(task.task_note)) {
-            let taskNotes: TaskNote[] | [] = task.task_note.map(
-              (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
-            )
-            // map over the task note array and build an array of task notes, then sort by latest completed item
-            taskNotes = sortTaskNotesNewFirst(taskNotes)
-            const updatedString = taskNotes.length ? taskNotes[0].inserted_at : task.inserted_at
-            const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
-            const percentComplete = getPercentDone(taskNotes, task.duration, task.frequency)
-            const newRes: Task = {
-              id: task.id,
-              name: task.name,
-              active: task.active,
-              inserted_at: task.inserted_at,
-              notes: taskNotes,
-              description: task.description,
-              lastUpdated: lastUpdatedDuration,
-              duration: task.duration,
-              frequency: task.frequency,
-              percentComplete,
-            }
-            newTaskList.push(newRes)
-          }
-        })
-        if (sortNewestFirst) {
-          newTaskList = sortTaskNewFirst(newTaskList)
-        } else {
-          newTaskList = sortTaskOldFirst(newTaskList)
-        }
-        newTaskList = filterTasks(newTaskList, value)
-        setTaskList([...newTaskList]);
-      }
+      // let { data, error, status } = await supabase
+      //   .from('task')
+      //   .select(`id, 
+      //     name, 
+      //     active, 
+      //     inserted_at, 
+      //     name, 
+      //     description, 
+      //     updated_at, 
+      //     frequency,
+      //     duration,
+      //     task_note(id, note, inserted_at, time)
+      //   `)
+      //   .eq('user_id', session?.user?.id)
+      // if (error && status !== 406) {
+      //   throw error
+      // }
+      // if (data) {
+      //   let newTaskList: Task[] = []
+      //   data.map((task) => {
+      //     if (Array.isArray(task.task_note)) {
+      //       let taskNotes: TaskNote[] | [] = task.task_note.map(
+      //         (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
+      //       )
+      //       // map over the task note array and build an array of task notes, then sort by latest completed item
+      //       taskNotes = sortTaskNotesNewFirst(taskNotes)
+      //       const updatedString = taskNotes.length ? taskNotes[0].inserted_at : task.inserted_at
+      //       const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
+      //       const amountDone = getPercentDone(taskNotes, task.duration, task.frequency)
+      //       const newRes: Task = {
+      //         id: task.id,
+      //         name: task.name,
+      //         active: task.active,
+      //         inserted_at: task.inserted_at,
+      //         notes: taskNotes,
+      //         description: task.description,
+      //         lastUpdated: lastUpdatedDuration,
+      //         duration: task.duration,
+      //         frequency: task.frequency,
+      //         amountDone,
+      //       }
+      //       newTaskList.push(newRes)
+      //     }
+      //   })
+      //   if (sortNewestFirst) {
+      //     newTaskList = sortTaskNewFirst(newTaskList)
+      //   } else {
+      //     newTaskList = sortTaskOldFirst(newTaskList)
+      //   }
+      //   newTaskList = filterTasks(newTaskList, value)
+      //   setTaskList([...newTaskList]);
+      // }
     } catch (error) {
       alert('Error loading activity data!')
     }
@@ -109,77 +146,50 @@ export const useTaskControl = () => {
   const supabase = useSupabaseClient()
   const session = useSession()
   const [task, setTask] = useState<Task | null>(null)
+  const [token, setToken] = useState<string | null>(null)
+  useEffect(() => {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    setToken(token)
+  }, [])
 
   const getTask = async (taskId: string) => {
-    let url = 'http://127.0.0.1:5000/tasks';
-    let options = {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjc5OTQxNjA3LCJzdWIiOiJlODNlZGU2OC1hYjE2LTRkODctODhhZi1hNmM1MmMxZDM1MmQiLCJlbWFpbCI6Im1ycGVyZWlyYTkxQGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnt9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNjc5OTM4MDA3fV0sInNlc3Npb25faWQiOiI0YjZkM2ZiZi0wZGRmLTQwMTEtODUzYS1lOTI3MTk4NzUxM2QifQ.yJ3dCkE7TOtajA02cMDZD06YUIug1x7yDIubnMv1Ezw'
-      },
-    };
-    let response = await fetch(url, options);
-    let responseOK = response && response.ok;
-    if (responseOK) {
-      let data = await response.json();
-      // do something with data
-    }
     try {
-      const { data, error, status } = await supabase
-        .from('task')
-        .select(`id, 
-        name, 
-        active, 
-        inserted_at, 
-        name, 
-        description, 
-        updated_at, 
-        duration,
-        frequency,
-        task_note(id, note, inserted_at, time),
-        subtask(id, name, description, complete, inserted_at)
-        `)
-        .eq('user_id', session?.user?.id)
-        .eq('id', taskId)
-        .single()
-      if (error && status !== 406) {
-        throw error
-      }
-      if (data && Array.isArray(data.task_note) && Array.isArray(data.subtask)) {
-        let taskNotes: TaskNote[] | [] = data?.task_note.map(
-          (n) => ({ id: n.id, note: n.note, inserted_at: n.inserted_at, time: n.time })
-        )
-        let subtasks: Subtask[] | [] = data?.subtask.map(
-          (n) => ({ id: n.id, name: n.name, inserted_at: n.inserted_at, description: n.description, complete: n.complete })
-        )
-        // map over the task note array and build an array of task notes, then sort by latest completed item
-        taskNotes = sortTaskNotesNewFirst(taskNotes)
-        subtasks = sortSubtaskNewFirst(subtasks)
-        const updatedString = taskNotes.length ? taskNotes[0].inserted_at : data.inserted_at
-        const duration = moment().diff(moment(updatedString), seconds)
-        const noteObject = mapNoteObject(taskNotes)
-        const percentComplete = getPercentDone(taskNotes, data.duration, data.frequency)
+      let url = `http://127.0.0.1:5000/task?task_id=${taskId}`;
+      let options = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=UTF-8',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      let response = await fetch(url, options);
+      let responseOK = response && response.ok;
+      if (responseOK) {
+        const { task }: { task: TaskDTO } = await response.json();
+        const lastUpdated = moment().diff(moment(task?.updated_at), seconds)
+        const noteObject = mapNoteObject(task.task_note)
         setTask({
-          id: data.id,
-          name: data.name,
-          description: data.description,
-          inserted_at: data.inserted_at,
+          id: task.id,
+          name: task.name,
+          description: task.description,
+          inserted_at: task.inserted_at,
           noteObject,
-          lastUpdated: duration,
-          active: data.active,
-          duration: data.duration,
-          frequency: data.frequency,
-          notes: taskNotes,
-          percentComplete,
-          subtasks,
+          lastUpdated,
+          active: task.active,
+          duration: task.duration,
+          frequency: task.frequency,
+          notes: task.task_note,
+          amountDone: task.amount_done,
+          subtasks: task.subtask,
         })
+
       }
 
     } catch (error) {
-      alert('Error updating the task status!')
+      console.log(error);
+      alert('Error getting the task!')
+      
     }
   }
   const addTaskNote = async (taskId: string, note: string, time?: string) => {

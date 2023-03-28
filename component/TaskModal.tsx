@@ -19,7 +19,7 @@ const newTask = {
   lastUpdated: 0,
   active: true,
   duration: 0,
-  percentComplete: 0,
+  amountDone: 0,
 }
 export const TaskModal = ({ isOpen, onClose, submitNewTask }: Props) => {
   const [modalTask, setModalTask] = useState<Task>(newTask)

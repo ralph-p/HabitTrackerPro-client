@@ -16,7 +16,7 @@ const newTask = {
   lastUpdated: 0,
   active: true,
   frequency: 0,
-  percentComplete: 0,
+  amountDone: 0,
   duration: 0,
 }
 const TaskPage = () => {

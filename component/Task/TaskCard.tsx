@@ -27,11 +27,11 @@ export const TaskCard = ({ task }: Props) => {
       <CardBody>
         <HStack spacing={2} justifyContent='space-between'>
           <Text color="gray.900"><TimeIcon />{lastUpdated(task.lastUpdated)}</Text>
-          <CircularProgress value={task.percentComplete} color='green.400'>
-            <CircularProgressLabel><Text color="gray.900">{`${(task.percentComplete).toFixed(1)}%`}</Text></CircularProgressLabel>
+          <CircularProgress value={task.amountDone} color='green.400'>
+            <CircularProgressLabel><Text color="gray.900">{`${(task.duration/task.amountDone).toFixed(1)}%`}</Text></CircularProgressLabel>
           </CircularProgress>
         </HStack>
-        {/* <Text color="gray.900">{`${(task.percentComplete).toFixed(1)}% complete`}</Text> */}
+        {/* <Text color="gray.900">{`${(task.amountDone).toFixed(1)}% complete`}</Text> */}
       </CardBody>
     </Card>
   )

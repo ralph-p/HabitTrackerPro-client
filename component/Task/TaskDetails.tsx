@@ -11,12 +11,12 @@ type TaskDetailsProps = {
   updateTask: (value: string | boolean | number, key: string) => void;
 }
 
-export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) => {
+export const TaskDetails = ({ task, readOnly, updateTask }: TaskDetailsProps) => {  
   const getReadOnly = () => (
     <VStack alignItems={'start'}>
       <Text>Name: {task.name}</Text>
       <Text>Description: {task.description}</Text>
-      <Text>Amount complete: {task.percentComplete.toFixed(1)}%</Text>
+      <Text>Amount complete: {(task.duration/task.amountDone).toFixed(1)}%</Text>
       <Text>Duration: {toHHMMDisplay(task.duration)} every {FrequencyString[task.frequency]}</Text>
       <Text>{lastUpdated(task.lastUpdated)}</Text>
       <HStack>

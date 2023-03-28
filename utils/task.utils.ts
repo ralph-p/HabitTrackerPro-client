@@ -8,7 +8,7 @@ export const formatDate = (dateString: string) => {
 }
 
 export const mapNoteObject = (taskNotes: TaskNote[]) => {
-  const notes: NoteObject = {}
+  const notes: NoteObject = {}  
   taskNotes.forEach((note) => {
     const noteDate = formatDate(note.inserted_at)
     if (notes[noteDate]) {
@@ -140,7 +140,7 @@ export const getTaskObjectFromDTO = (taskDTO: {
     taskNotes = sortTaskNotesNewFirst(taskNotes)
     const updatedString = taskNotes.length ? taskNotes[0].inserted_at : taskDTO.inserted_at
     const lastUpdatedDuration = moment().diff(moment(updatedString), seconds)
-    const percentComplete = getPercentDone(taskNotes, taskDTO.duration, taskDTO.frequency)
+    const amountDone = getPercentDone(taskNotes, taskDTO.duration, taskDTO.frequency)
     const newTask: Task = {
       id: taskDTO.id,
       name: taskDTO.name,
@@ -151,7 +151,7 @@ export const getTaskObjectFromDTO = (taskDTO: {
       lastUpdated: lastUpdatedDuration,
       duration: taskDTO.duration,
       frequency: taskDTO.frequency,
-      percentComplete,
+      amountDone,
     }
     return newTask;
   }

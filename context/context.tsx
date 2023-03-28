@@ -50,6 +50,8 @@ interface Props {
   children?: ReactNode
 }
 
+export const AUTH_TOKEN_KEY = 'authToken';
+
 export const Context = ({ children }: Props) => {
   const session = useSession()
   const [isLoading, setIsLoading] = useState(true);
@@ -64,7 +66,15 @@ export const Context = ({ children }: Props) => {
     getTaskList,
   } = useTask()
   const { getTask, task, addTaskNote, updateTask, addSubtask } = useTaskControl()
+  useEffect(() => {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if(!token && session) {
+      // localStorage.setItem(AUTH_TOKEN_KEY, session.access_token)
+      localStorage.setItem(AUTH_TOKEN_KEY, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjgwMDE4ODAwLCJzdWIiOiJlODNlZGU2OC1hYjE2LTRkODctODhhZi1hNmM1MmMxZDM1MmQiLCJlbWFpbCI6Im1ycGVyZWlyYTkxQGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnt9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNjgwMDE1MjAwfV0sInNlc3Npb25faWQiOiIyNTgwNzk5MC1iOTNlLTQzYzAtYjQzZC05ODI5ZjhlNDZlNWIifQ.42gfU_LK9GZPoAbEgO77sTh_Cxbk4_IOX0eSfBivVp4')
+    }
 
+  }, [])
+  
   useEffect(() => {
     if (session) {
       setCurrentUser(session.user)
