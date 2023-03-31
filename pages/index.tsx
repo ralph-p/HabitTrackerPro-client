@@ -2,6 +2,7 @@ import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { VStack, Button } from '@chakra-ui/react'
 import { useGSDContext } from '../context/context'
+import LoginForm from '../component/Login'
 
 const Home = () => {
   // const session = useSession()
@@ -11,7 +12,7 @@ const Home = () => {
   return (
     <>
       {!session ? (
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} theme="dark" />
+        <LoginForm />
       ) : (
         <VStack spacing={3} alignItems={'normal'} padding="2em">
           <Button as={'a'} href="/task" colorScheme="facebook">Get Stuff Done</Button>

@@ -6,10 +6,11 @@ import { useState } from 'react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { Context } from '../context/context'
 import Layout from '../component/Layout'
+import { cookies } from 'next/headers';
 
 export default function App({ Component, pageProps }: AppProps) {
   const [supabase] = useState(() => createBrowserSupabaseClient())
-
+  
   return (
     <ChakraProvider>
       <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.initialSession}>

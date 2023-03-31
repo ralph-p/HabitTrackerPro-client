@@ -18,7 +18,7 @@ export const useProfile = (session: { session: Session | null }) => {
     supabase.auth.signOut().then(() => console.log('signed out'))
   }
   const login = async (email: string, password: string) => {
-    const url =  "http://127.0.0.1:5000/login"
+    
   }
   const getProfile = async () => {
     try {
