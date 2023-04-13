@@ -28,9 +28,9 @@ export const sortTaskNotesNewFirst = (taskNotes: TaskNote[]) => {
   return taskNotes.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
 }
 export const sortSubtaskNewFirst = (subtasks: Subtask[]) => {
-
-
-  return subtasks.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
+  let newSubTasks = subtasks.sort((a, b) => moment(b.inserted_at).valueOf() - moment(a.inserted_at).valueOf())
+  newSubTasks = newSubTasks.sort((a, b) =>Number(a.complete) - Number(b.complete));
+  return newSubTasks
 }
 
 export const sortTaskNotesOldFirst = (taskNotes: TaskNote[]) => {

@@ -194,6 +194,18 @@ export const useTaskControl = () => {
       alert('Enter a task note')
     }
   }
+  const updateSubtask = async (taskId: string, subtaskId: string, complete: boolean) => {
+      try {
+        const { error } = await supabase
+          .from('subtask')
+          .update({ complete })
+          .eq('user_id', session?.user?.id)
+          .eq('id', subtaskId)
+        getTask(taskId)
+      } catch (error) {
+        alert('Error adding note data!')
+      }
+  }
   const updateTask = async (task: Task) => {
     try {
       const { error } = await supabase
@@ -207,5 +219,5 @@ export const useTaskControl = () => {
       alert('Error updating the task status!')
     }
   }
-  return{getTask, task, addTaskNote, updateTask, addSubtask}
+  return{getTask, task, addTaskNote, updateTask, addSubtask, updateSubtask}
 }
