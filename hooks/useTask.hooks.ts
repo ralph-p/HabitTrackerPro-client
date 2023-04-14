@@ -1,7 +1,7 @@
 import { useSupabaseClient, useUser, useSession } from '@supabase/auth-helpers-react'
 import moment from 'moment';
 import { cache, useEffect, useState } from 'react'
-import {  } from '../api/api-client';
+import { } from '../api/api-client';
 import { AUTH_TOKEN_KEY } from '../context/context';
 import { sortTaskNotesNewFirst, sortTaskNewFirst, sortTaskOldFirst, mapNoteObject, filterTasks, seconds, getPercentDone, sortSubtaskNewFirst } from '../utils/task.utils';
 import { CardViewControls, FrequencyEnum, Subtask, Task, TaskDTO, TaskNote } from './types/task';
@@ -169,6 +169,18 @@ export const useTaskControl = () => {
       alert('Enter a task note')
     }
   }
+  const updateSubtask = async (taskId: string, subtaskId: string, complete: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('subtask')
+        .update({ complete })
+        .eq('user_id', session?.user?.id)
+        .eq('id', subtaskId)
+      getTask(taskId)
+    } catch (error) {
+      alert('Error adding note data!')
+    }
+  }
   const updateTask = async (task: Task) => {
     try {
       const { error } = await supabase
@@ -182,5 +194,5 @@ export const useTaskControl = () => {
       alert('Error updating the task status!')
     }
   }
-  return { getTask, task, addTaskNote, updateTask, addSubtask }
+  return { getTask, task, addTaskNote, updateTask, addSubtask, updateSubtask }
 }

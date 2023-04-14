@@ -24,6 +24,7 @@ interface GSDContextProps {
   addTaskNote: (taskId: string, note: string, time?: string | undefined) => Promise<void>; 
   updateTask: (task: Task) => Promise<void>; 
   addSubtask: (taskId: string, name: string, description?: string | undefined) => Promise<void>;
+  updateSubtask: (taskId: string, subtaskId: string ,complete: boolean) => Promise<void>;
 
 }
 export const GSDContext = createContext<GSDContextProps>({
@@ -44,6 +45,7 @@ export const GSDContext = createContext<GSDContextProps>({
   updateTask: voidFunction, 
   addTaskNote: voidFunction, 
   addSubtask: voidFunction, 
+  updateSubtask: voidFunction,
 })
 
 interface Props {
@@ -65,7 +67,7 @@ export const Context = ({ children }: Props) => {
     setControlValue,
     getTaskList,
   } = useTask()
-  const { getTask, task, addTaskNote, updateTask, addSubtask } = useTaskControl()
+  const { getTask, task, addTaskNote, updateTask, addSubtask, updateSubtask } = useTaskControl()
   useEffect(() => {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     if(!token && session) {
@@ -101,7 +103,8 @@ export const Context = ({ children }: Props) => {
       task,
       addTaskNote,
       updateTask,
-      addSubtask
+      addSubtask,
+      updateSubtask
     }}>{children}</GSDContext.Provider>
   )
 }

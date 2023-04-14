@@ -1,5 +1,5 @@
 import { AddIcon } from '@chakra-ui/icons'
-import { Button, Checkbox, Container, Input, Spinner, Table, Tbody, Td, Textarea, Tfoot, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
+import { Button, Checkbox, Container, Input, Spinner, Table, Tbody, Td, Text, Textarea, Tfoot, Th, Thead, Tr, useDisclosure } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useGSDContext } from '../../context/context'
 import TaskNoteModal from './TaskNoteModal'
@@ -7,7 +7,7 @@ import TaskNoteModal from './TaskNoteModal'
 type Props = {}
 
 export const SubTask = (props: Props) => {
-  const { addSubtask, task } = useGSDContext();
+  const { addSubtask, task, updateSubtask } = useGSDContext();
   if (!task) return <Spinner />
   const [newSubtask, setNewSubtask] = useState({ name: '', description: '' })
   const [showNewSubtask, setShowNewSubtask] = useState(false)
@@ -64,10 +64,9 @@ export const SubTask = (props: Props) => {
             {
               task.subtasks?.map((subtask) => (
                 <Tr key={`${subtask.id}`}>
-                  <Td>{subtask.name}</Td>
-                  <Td>{subtask.description}</Td>
-                  {/* <Td><Checkbox isChecked={subtask.complete} /></Td> */}
-                  <Td><AddIcon boxSize={3} onClick={() => openNoteModal(subtask.name)} cursor="pointer" /></Td>
+                  <Td  cursor={'pointer'} onClick={() => {updateSubtask(task.id, subtask.id, !subtask.complete)}}><Text as={subtask.complete ? 's' : 'b'}>{subtask.name}</Text></Td>
+                  <Td>{!subtask.complete && (<Text as='sub'>{subtask.description}</Text>)}</Td>
+                  <Td>{!subtask.complete && (<AddIcon boxSize={3} onClick={() => openNoteModal(subtask.name)} cursor="pointer" />)}</Td>
                 </Tr>
               ))
             }
